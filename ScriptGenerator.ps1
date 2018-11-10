@@ -1,11 +1,10 @@
 #Script Generator
-#9/18/2018 Austin Webber, UWRF
+#9/18/2018 Austin Webber
 
 #Resources Used: 
 #MSI Information Grabber: http://www.scconfigmgr.com/2014/08/22/how-to-get-msi-file-information-with-powershell/
 #PS2EXE-GUI: https://gallery.technet.microsoft.com/scriptcenter/PS2EXE-GUI-Convert-e7cb69d5
 #Create Shortcuts: https://www.pdq.com/blog/pdq-deploy-and-powershell/
-#Nate and Mac :)
 
 #Converts PS to EXE
 #Source https://gallery.technet.microsoft.com/scriptcenter/PS2EXE-GUI-Convert-e7cb69d5
