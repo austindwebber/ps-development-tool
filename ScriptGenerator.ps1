@@ -2677,8 +2677,12 @@ $inputXML = @"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ScriptGeneratorGUI"
         mc:Ignorable="d"
-        Title="Script Generator" Height="567.857" Width="585.034" Background="Black" FontFamily="Segoe UI Light" FontSize="16">
-    <Grid Margin="0,0,-8,0">
+        Title="Script Generator" Height="574.07" Width="585.034" Background="Black" FontFamily="Segoe UI Light" FontSize="16">
+    <Grid Margin="0,0,-8,0" Background="#FF851E1E">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="131*"/>
+            <RowDefinition Height="50*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*"/>
             <ColumnDefinition Width="0*"/>
@@ -2686,8 +2690,8 @@ $inputXML = @"
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <TextBlock x:Name="IntroText" HorizontalAlignment="Left" Margin="14,10,0,0" TextWrapping="Wrap" Text="Script Generator " VerticalAlignment="Top" Height="22" Width="507" Foreground="White" Grid.Column="3" FontFamily="Segoe UI Black"/>
-        <Label x:Name="InstallationFile_Label" Content="Select your installation file:" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Background="Black" Foreground="White" Grid.Column="3" Height="31" Width="211" FontFamily="Segoe UI Semibold"/>
-        <Label x:Name="Switch_Label" Content="Enter your installation switches:" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Background="Black" Foreground="White" Grid.Column="3" Height="31" Width="247" FontFamily="Segoe UI Semibold"/>
+        <Label x:Name="InstallationFile_Label" Content="Select your installation file:" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Foreground="White" Grid.Column="3" Height="31" Width="211" FontFamily="Segoe UI Semibold"/>
+        <Label x:Name="Switch_Label" Content="Enter your installation switches:" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Foreground="White" Grid.Column="3" Height="31" Width="247" FontFamily="Segoe UI Semibold"/>
         <ComboBox x:Name="InstallationFile_ComboBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Margin="285,45,0,0" VerticalAlignment="Top" Width="250"/>
         <TextBox x:Name="Switches" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="285,75,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5"/>
 
@@ -2706,11 +2710,11 @@ $inputXML = @"
         <TextBox x:Name="DesktopShortcut_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="285,198,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5" Visibility="Hidden"/>
         <TextBox x:Name="Copy_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="185,250,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5" Visibility="Hidden"/>
         <TextBox x:Name="CopyDestination_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="185,280,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5" Visibility="Hidden"/>
-        <TextBox x:Name="ExtraCode_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="118" Margin="32,358,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="503" Background="#FFE5E5E5" AcceptsReturn="True" Visibility="Hidden"/>
-        <Label x:Name="Author" Grid.ColumnSpan="4" Content="Austin Webber, UWRF" HorizontalAlignment="Left" Margin="410,9,0,0" VerticalAlignment="Top" Width="125" Background="Black" Foreground="Red" FontSize="12"/>
-        <Button x:Name="Generate_Button" Content="Generate" Grid.Column="3" HorizontalAlignment="Left" Margin="144,502,0,0" VerticalAlignment="Top" Width="280" Height="25" Background="#FF84FF8A" FontWeight="Bold" IsEnabled="False"/>
-        <Border BorderBrush="Red" BorderThickness="1" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="115" VerticalAlignment="Top" Width="568" Margin="1,0,0,0"/>
-
+        <TextBox x:Name="ExtraCode_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="118" Margin="32,358,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="503" Background="#FFE5E5E5" AcceptsReturn="True" Visibility="Hidden" Grid.RowSpan="2"/>
+        <Label x:Name="Author" Grid.ColumnSpan="4" Content="Austin Webber, UWRF" HorizontalAlignment="Left" Margin="410,9,0,0" VerticalAlignment="Top" Width="125" Foreground="White" FontSize="12"/>
+        <Button x:Name="Generate_Button" Content="Generate" Grid.Column="3" HorizontalAlignment="Left" Margin="1,109.009,0,0" VerticalAlignment="Top" Width="568" Height="38.5" Background="White" FontWeight="Bold" IsEnabled="False" Grid.Row="1"/>
+        <Border BorderBrush="Black" BorderThickness="3" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="115" VerticalAlignment="Top" Width="568" Margin="1,0,0,0"/>
+        <Border BorderBrush="Black" BorderThickness="3,0,3,3" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="387" VerticalAlignment="Top" Width="568" Margin="1,110,0,0" Grid.RowSpan="2"/>
     </Grid>
 </Window>
 
