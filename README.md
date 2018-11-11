@@ -1,5 +1,5 @@
 # script-generator
-PowerShell Silent Script Generator
+Silent Installation Script Generator (PowerShell)
 
 Usage:
 1. Copy over ScriptGenerator.exe and ScriptGenerator.exe.config into folder with your installation files
