@@ -2677,8 +2677,8 @@ $inputXML = @"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ScriptGeneratorGUI"
         mc:Ignorable="d"
-        Title="Script Generator" Height="567.857" Width="577.578" Background="Black" FontFamily="Segoe UI Light" FontSize="16">
-    <Grid Margin="0,0,2,0">
+        Title="Script Generator" Height="567.857" Width="585.034" Background="Black" FontFamily="Segoe UI Light" FontSize="16">
+    <Grid Margin="0,0,-8,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*"/>
             <ColumnDefinition Width="0*"/>
@@ -2691,7 +2691,7 @@ $inputXML = @"
         <ComboBox x:Name="InstallationFile_ComboBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Margin="285,45,0,0" VerticalAlignment="Top" Width="250"/>
         <TextBox x:Name="Switches" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="285,75,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5"/>
 
-        <CheckBox x:Name="StartMenu_CheckBox" Grid.ColumnSpan="4" Content="Add Start Menu shortcut?" HorizontalAlignment="Left" Margin="14,120,0,0" VerticalAlignment="Top" Foreground="White" FontWeight="Bold" FontFamily="Segoe UI Semibold"/>
+        <CheckBox x:Name="StartMenu_CheckBox" Grid.ColumnSpan="4" Content="Add Start Menu shortcut?" HorizontalAlignment="Left" Margin="14,120,0,0" VerticalAlignment="Top" FontWeight="Bold" FontFamily="Segoe UI Semibold" Background="White" Foreground="White"/>
         <CheckBox x:Name="Desktop_CheckBox" Grid.ColumnSpan="4" Content="Add Public Desktop shortcut?" HorizontalAlignment="Left" Margin="12,175,0,0" VerticalAlignment="Top" Foreground="White" FontWeight="Bold" FontFamily="Segoe UI Semibold"/>
         <CheckBox x:Name="Copy_CheckBox" Grid.ColumnSpan="4" Content="Copy a Folder/File?" HorizontalAlignment="Left" Margin="12,230,0,0" VerticalAlignment="Top" Foreground="White" FontWeight="Bold" FontFamily="Segoe UI Semibold"/>
         <CheckBox x:Name="ExtraCode_CheckBox" Grid.ColumnSpan="4" Content="Add extra code?" HorizontalAlignment="Left" Margin="10,309,0,0" VerticalAlignment="Top" Foreground="White" FontWeight="Bold" FontFamily="Segoe UI Semibold"/>
@@ -2707,9 +2707,9 @@ $inputXML = @"
         <TextBox x:Name="Copy_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="185,250,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5" Visibility="Hidden"/>
         <TextBox x:Name="CopyDestination_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="185,280,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5" Visibility="Hidden"/>
         <TextBox x:Name="ExtraCode_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="118" Margin="32,358,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="503" Background="#FFE5E5E5" AcceptsReturn="True" Visibility="Hidden"/>
-        <Label x:Name="Author" Grid.ColumnSpan="4" Content="Austin Webber, UWRF" HorizontalAlignment="Left" Margin="433,9,0,0" VerticalAlignment="Top" Width="101" Background="Black" Foreground="Red" FontSize="10"/>
-        <Button x:Name="Generate_Button" Content="Generate" Grid.Column="3" HorizontalAlignment="Left" Margin="140,502,0,0" VerticalAlignment="Top" Width="280" Height="25" Background="#FF84FF8A" FontWeight="Bold" IsEnabled="False"/>
-
+        <Label x:Name="Author" Grid.ColumnSpan="4" Content="Austin Webber, UWRF" HorizontalAlignment="Left" Margin="410,9,0,0" VerticalAlignment="Top" Width="125" Background="Black" Foreground="Red" FontSize="12"/>
+        <Button x:Name="Generate_Button" Content="Generate" Grid.Column="3" HorizontalAlignment="Left" Margin="144,502,0,0" VerticalAlignment="Top" Width="280" Height="25" Background="#FF84FF8A" FontWeight="Bold" IsEnabled="False"/>
+        <Border BorderBrush="Red" BorderThickness="1" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="115" VerticalAlignment="Top" Width="568" Margin="1,0,0,0"/>
 
     </Grid>
 </Window>
