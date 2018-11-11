@@ -1,5 +1,6 @@
 #Script Generator
-#9/18/2018 Austin Webber
+#11/10/2018 Austin Webber
+#9/18/2018
 
 #Resources Used: 
 #MSI Information Grabber: http://www.scconfigmgr.com/2014/08/22/how-to-get-msi-file-information-with-powershell/
@@ -2507,57 +2508,17 @@ End {
 }
 }
 
-#Function that verifies a user entered value is correct
-function Verification {
-    param(
-    [Parameter(Mandatory=$true)]$prompt,
-    [Parameter(Mandatory=$true)]$inputType
-    )
-    #Create verification variable
-    $verification = ""
-
-    #Loop until user agrees their input is correct
-    while ($verification -ne "y" ) {
-
-        #Prompt User
-        Write-Host -ForegroundColor Yellow `n$prompt
-        $userInput = Read-Host $inputType
-
-        #Verifification
-        Write-Host -ForegroundColor Yellow "`nPlease verify that this is correct:" $userInput
-        $verification = Read-Host "(Y/N)"
-    }
-
-    #Return User's input
-    Return $userInput
-}
-
-#Function that allows user to select installation file
-function getCWDInstallationFile {
-    param(
-    [Parameter(Mandatory=$true)]$Include,
-    [Parameter(Mandatory=$true)]$Exclude
-    )
-    
-    #Data fields
-    $installationFile = ""
-    $installationFileLocation = ""
-
-    #Prompt user to select a file
-    Write-Host "`nPlease select the installation file." -ForegroundColor Yellow
-    $installationFile = @(Get-ChildItem .\* -Include $Include -Exclude $Exclude | Out-GridView -Title "Choose your installation file" -OutputMode Single)
-        
-    #Return the location of the installation file
-    Return $installationFile
-}
-
 #Generates install/uninstall scripts based on 
 function generateScript {
     param(
     [Parameter(Mandatory=$true)]$switches,
     [Parameter(Mandatory=$true)]$installationFileLocation,
     [Parameter(Mandatory=$false)]$productCode,
-    [Parameter(Mandatory=$false)]$outsideofWD
+	[Parameter(Mandatory=$false)]$desktopIconName,
+	[Parameter(Mandatory=$false)]$startMenuShortcut,
+	[Parameter(Mandatory=$false)]$copyOverFile,
+	[Parameter(Mandatory=$false)]$copyIntoDirectory,
+	[Parameter(Mandatory=$false)]$extraCode
     )
 
 	#If generation is complete
@@ -2567,417 +2528,275 @@ function generateScript {
     $currentDate = Get-Date -DisplayHint Date
 
     #Set the file name without the extension
-    Write-Host -ForegroundColor Yellow "`nWhat do you want the application to be called? (Please don't enter spaces.)"
-    $applicationName = Read-Host "Name"
+    $installationFileName = [IO.Path]::GetFileNameWithoutExtension($installationFileLocation)
 
-    #Set the file name without the extension
-    $installationFileName = [IO.Path]::GetFileNameWithoutExtension($installationFile)
+    #Set the file name with the extension
+    $installationFile = Split-Path $installationFileLocation -Leaf
 
-    #Copy over Desktop icon
-    Write-Host -ForegroundColor Yellow "`nWould you like your script to add a shortcut onto the Desktop? (You must have it in the current folder.)"
-    $desktopIcon = Read-Host "(Y/N)"
+    if ($installationFileLocation -match '.msi' -and $complete -match 'false') {
 
-    if ($desktopIcon -eq "y") {
-        Write-Host -ForegroundColor Yellow "What is the name of the Desktop icon? (including the extension)"
-        $desktopIconName = Read-Host "Name"      
-    }
-
-    #Copy over Start Menu icon
-    if ($installationFileLocation -match '.exe') {
-        Write-Host -ForegroundColor Yellow "`nWould you like your script to add a shortcut into the Start Menu? (You must have it in the current folder.)"
-        $startMenu = Read-Host "(Y/N)"
-
-        if ($startMenu -eq "y") {
-            
-            #Ask for the name of the shortcut
-            Write-Host -ForegroundColor Yellow "What is the name of the shortcut? (including the extension)"
-            $startMenuShortcut = Read-Host "Name" 
-
-        }
-    }
-
-	#Copy over File/Folder
-    Write-Host -ForegroundColor Yellow "`nWould you like your script to copy a file/folder into a directory? (You must have it in the current folder.)"
-    $copyFile = Read-Host "(Y/N)"
-
-    if ($copyFile -eq "y") {
-            
-        #Ask for the name of the file/folder
-        Write-Host -ForegroundColor Yellow "What is the name of the file/folder you would like to copy over? (including the extension if it is a file)"
-        $copyOverFile = Read-Host "File/Folder Name" 
-
-        #Ask for the name of the directory
-        Write-Host -ForegroundColor Yellow "What is the location of the directory you want to copy into? (Ex: C:\Program Files\Firefox)"
-        $copyIntoDirectory = Read-Host "Directory Location" 
-
-    }
-
-	#Add code
-    Write-Host -ForegroundColor Yellow "`nWould you like to add any other code to your script?"
-    $extraCode = Read-Host "(Y/N)"
-
-    if ($extraCode -eq "y") {
-
-        Write-Host -ForegroundColor Yellow "What line of code would you like to add?"
-        $extraCodeText = Read-Host "Code"  
-
-		Write-Host -ForegroundColor Yellow "Would you like to add another line of code? (Y/N)"
-        $extraCodeDecision = Read-Host "(Y/N)" 
-
-		while ($extraCodeDecision -eq "y")  {
-			Write-Host -ForegroundColor Yellow "What line of code would you like to add?"
-        	$tempCode = Read-Host "Code" 
-
-			Write-Host -ForegroundColor Yellow "Would you like to add another line of code? (Y/N)"
-        	$extraCodeDecision = Read-Host "(Y/N)"  
-
-			$extraCodeText = $($extraCodeText + "`n" + $tempCode)
-		}  
-    }
-
-    #If the file is outside of the working directory
-    if ($outsideofWD -eq "true" -and $complete -match 'false') {
-
-        #Set the file name with the extension
-        $installationFile = $installationFileLocation
-
-        #Create installation script
-        New-Item -Name $("install_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFilename + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
+		Write-Host -ForegroundColor Green "Generating Scripts..."
+    	#Create installation script
+        New-Item -Name $("install_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
         "`n#Date Created " + $currentDate + "
         `n#Silently installs " + $installationFileName + "`nStart-Process" + ' "$PSScriptRoot\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
-       
+
+        if ($productCode -ne "") {
+            #Create uninstallation script
+            New-Item -Name $("uninstall_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently uninstalls " + $installationFileName + 
+            "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
+            "`n#Date Created " + $currentDate + "
+            `n#Silently uninstalls " + $installationFileName + "`nStart-Process " + '"msiexec.exe"' + " -Wait -ArgumentList " + '"/qn /x' + $productCode + '"') -Force | Out-Null
+        }
+
         #Create temporary test directory
 		if (!(Test-Path ".\_TEST_YOUR_APPLICATION")) {
             New-Item -ItemType Directory ".\_TEST_YOUR_APPLICATION" -Force
 		}
 
         #Create Test Script
-        New-Item -Path $(".\_TEST_YOUR_APPLICATION\") -Name $("test_" + $applicationName + ".ps1") -ItemType File -Value $("#Silently installs " + $applicationName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
+        New-Item -Path $(".\_TEST_YOUR_APPLICATION\") -Name $("test_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
         "`n#Date Created " + $currentDate + "`n`n" +'Write-Host -ForegroundColor Green "Starting your installation..."' + "`n"  + "
-        `n#Silently installs " + $applicationName + "`n" + '$parent = Get-Location | Split-Path -Parent' + "`nStart-Process" + ' "$parent\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
-
-        #Copy over shortcut into Start Menu
-        if ($startMenu -eq "y") {     
-        
-            #Add to install script
-            Add-Content $(".\install_" + $applicationName + ".ps1") -Value $("`n`n#Copies a shortcut into the start menu" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $startMenuShortcut + '" "' + '$env:ProgramData\Microsoft\Windows\Start Menu\Programs' + '" -Force') -Force | Out-Null
-
-            #Add to test script
-            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n`n#Copies a shortcut into the start menu" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $startMenuShortcut + '" "' + '$env:ProgramData\Microsoft\Windows\Start Menu\Programs' + '" -Force') -Force | Out-Null
-        }
-
+        `n#Silently installs " + $installationFileName + "`n" + '$parent = Get-Location | Split-Path -Parent' + "`nStart-Process" + ' "$parent\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
+            
         #Copy shortcut onto Desktop
-        if ($desktopIcon -eq "y") {
+        if ($desktopIconName -ne "UserInputNull") {
 
             #Add to install script
-            Add-Content $(".\install_" + $applicationName + ".ps1") -Value $("`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
+            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
 
             #Add to test script
-            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
+            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
         }
 
         #Copy file/folder into directory
-        if ($copyFile -eq "y") {
+        if ($copyOverFile -ne "UserInputNull" -and $copyIntoDirectory -ne "UserInputNull") {
 
             #Add to install script
-            Add-Content $(".\install_" + $applicationName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
+            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
 
             #Add to test script
-            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
+            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
         }
 
 		#Add extra code
-        if ($extraCode -eq "y") {     
+        if ($extraCode -ne "UserInputNull") {     
         
             #Add to install script
-            Add-Content $(".\install_" + $applicationName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCodeText) -Force | Out-Null
+            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCode) -Force | Out-Null
 
             #Add to test script
-            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCodeText) -Force | Out-Null
+            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCode) -Force | Out-Null
         }
 
 		#Add to end of test script
-		Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n" + 'Write-Host -ForegroundColor Green "Done!"' +"`n" + 'Start-Sleep -s 5')
+		Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n" + 'Write-Host -ForegroundColor Green "Done!"' +"`n" + 'Start-Sleep -s 5')
 
         #Compile Test Scripts
-        PS2EXE $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") $(".\_TEST_YOUR_APPLICATION\_TEST_RUN_AS_ADMIN_" + $applicationName + ".exe")
+        PS2EXE $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") $(".\_TEST_YOUR_APPLICATION\_TEST_RUN_AS_ADMIN_" + $installationFileName + ".exe") | Out-Null
 
-		$complete = "true"	
+		$complete = "true"
         Write-Host -ForegroundColor Green "`nSuccess!"
-            
-    }
-
-    #if the file is inside the working directory
-    if ($outsideofWD -ne "true") {
-
-        #Set the file name with the extension
-        $installationFile = Split-Path $installationFileLocation -Leaf
-
-        if ($installationFileLocation -match '.msi' -and $complete -match 'false') {
-
-            #Create installation script
-            New-Item -Name $("install_" + $applicationName + ".ps1") -ItemType File -Value $("#Silently installs " + $applicationName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
-            "`n#Date Created " + $currentDate + "
-            `n#Silently installs " + $applicationName + "`nStart-Process" + ' "$PSScriptRoot\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
-
-            if ($productCode -ne "") {
-                #Create uninstallation script
-                New-Item -Name $("uninstall_" + $applicationName + ".ps1") -ItemType File -Value $("#Silently uninstalls " + $applicationName + 
-                "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
-                "`n#Date Created " + $currentDate + "
-                `n#Silently uninstalls " + $applicationName + "`nStart-Process " + '"msiexec.exe"' + " -Wait -ArgumentList " + '"/qn /x' + $productCode + '"') -Force | Out-Null
-            }
-
-            #Create temporary test directory
-			if (!(Test-Path ".\_TEST_YOUR_APPLICATION")) {
-            	New-Item -ItemType Directory ".\_TEST_YOUR_APPLICATION" -Force
-			}
-
-            #Create Test Script
-            New-Item -Path $(".\_TEST_YOUR_APPLICATION\") -Name $("test_" + $applicationName + ".ps1") -ItemType File -Value $("#Silently installs " + $applicationName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
-            "`n#Date Created " + $currentDate + "`n`n" +'Write-Host -ForegroundColor Green "Starting your installation..."' + "`n"  + "
-            `n#Silently installs " + $applicationName + "`n" + '$parent = Get-Location | Split-Path -Parent' + "`nStart-Process" + ' "$parent\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
-            
-            #Copy shortcut onto Desktop
-            if ($desktopIcon -eq "y") {
-
-                #Add to install script
-                Add-Content $(".\install_" + $applicationName + ".ps1") -Value $("`n`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
-
-                #Add to test script
-                Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
-            }
-
-            #Copy file/folder into directory
-            if ($copyFile -eq "y") {
-
-                #Add to install script
-                Add-Content $(".\install_" + $applicationName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
-
-                #Add to test script
-                Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
-            }
-
-			#Add extra code
-        	if ($extraCode -eq "y") {     
-        
-            	#Add to install script
-            	Add-Content $(".\install_" + $applicationName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCodeText) -Force | Out-Null
-
-            	#Add to test script
-            	Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCodeText) -Force | Out-Null
-        	}
-
-			#Add to end of test script
-			Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n" + 'Write-Host -ForegroundColor Green "Done!"' +"`n" + 'Start-Sleep -s 5')
-
-            #Compile Test Scripts
-            PS2EXE $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") $(".\_TEST_YOUR_APPLICATION\_TEST_RUN_AS_ADMIN_" + $applicationName + ".exe")
-
-			$complete = "true"
-            Write-Host -ForegroundColor Green "`nSuccess!"
         }
 
-        if ($installationFileLocation -match '.exe' -and $complete -match 'false') {
+    if ($installationFileLocation -match '.exe' -and $complete -match 'false') {
 
-            #Create installation script
-            New-Item -Name $(".\install_" + $applicationName + ".ps1") -ItemType File -Value $("#Silently installs " + $applicationName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
-            "`n#Date Created " + $currentDate + "
-            `n#Silently installs " + $applicationName + "`nStart-Process" + ' "$PSScriptRoot\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
+		Write-Host -ForegroundColor Green "Generating Scripts..."
+        #Create installation script
+        New-Item -Name $(".\install_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
+        "`n#Date Created " + $currentDate + "
+        `n#Silently installs " + $installationFileName + "`nStart-Process" + ' "$PSScriptRoot\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
 
-            #Create temporary test directory
-			if (!(Test-Path ".\_TEST_YOUR_APPLICATION")) {
-            	New-Item -ItemType Directory ".\_TEST_YOUR_APPLICATION" -Force
-			}
+        #Create temporary test directory
+		if (!(Test-Path ".\_TEST_YOUR_APPLICATION")) {
+            New-Item -ItemType Directory ".\_TEST_YOUR_APPLICATION" -Force
+		}
 
-            #Create Test Script
-            New-Item -Path $(".\_TEST_YOUR_APPLICATION\") -Name $("test_" + $applicationName + ".ps1") -ItemType File -Value $("#Silently installs " + $applicationName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
-            "`n#Date Created " + $currentDate + "`n`n" +'Write-Host -ForegroundColor Green "Starting your installation..."' + "`n"  + "
-            `n#Silently installs " + $applicationName + "`n" + '$parent = Get-Location | Split-Path -Parent' + "`nStart-Process" + ' "$parent\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
+        #Create Test Script
+        New-Item -Path $(".\_TEST_YOUR_APPLICATION\") -Name $("test_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
+        "`n#Date Created " + $currentDate + "`n`n" +'Write-Host -ForegroundColor Green "Starting your installation..."' + "`n"  + "
+        `n#Silently installs " + $installationFileName + "`n" + '$parent = Get-Location | Split-Path -Parent' + "`nStart-Process" + ' "$parent\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
 
-            #Copy over shortcut into Start Menu
-            if ($startMenu -eq "y") {     
+        #Copy over shortcut into Start Menu
+        if ($startMenuShortcut -ne "UserInputNull") {     
         
-                #Add to install script
-                Add-Content $(".\install_" + $applicationName + ".ps1") -Value $("`n`n#Copies a shortcut into the start menu" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $startMenuShortcut + '" "' + '$env:ProgramData\Microsoft\Windows\Start Menu\Programs' + '" -Force') -Force | Out-Null
+            #Add to install script
+            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n`n#Copies a shortcut into the start menu" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $startMenuShortcut + '" "' + '$env:ProgramData\Microsoft\Windows\Start Menu\Programs' + '" -Force') -Force | Out-Null
 
-                #Add to test script
-                Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n`n#Copies a shortcut into the start menu" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $startMenuShortcut + '" "' + '$env:ProgramData\Microsoft\Windows\Start Menu\Programs' + '" -Force') -Force | Out-Null
-            }
+            #Add to test script
+            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n`n#Copies a shortcut into the start menu" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $startMenuShortcut + '" "' + '$env:ProgramData\Microsoft\Windows\Start Menu\Programs' + '" -Force') -Force | Out-Null
+        }
 
-            #Copy shortcut onto Desktop
-            if ($desktopIcon -eq "y") {
+        #Copy shortcut onto Desktop
+        if ($desktopIconName -ne "UserInputNull") {
 
-                #Add to install script
-                Add-Content $(".\install_" + $applicationName + ".ps1") -Value $("`n`#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
+            #Add to install script
+            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n`#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
 
-                #Add to test script
-                Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
-            }
+            #Add to test script
+            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
+        }
 
-            #Copy file/folder into directory
-            if ($copyFile -eq "y") {
+        #Copy file/folder into directory
+        if ($copyOverFile -ne "UserInputNull" -and $copyIntoDirectory -ne "UserInputNull") {
 
-                #Add to install script
-                Add-Content $(".\install_" + $applicationName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
+            #Add to install script
+            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
 
-                #Add to test script
-                Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
-            }
+            #Add to test script
+            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
+        }
 
-			#Add extra code
-        	if ($extraCode -eq "y") {     
+		#Add extra code
+        if ($extraCode -ne "UserInputNull") {     
         
-            	#Add to install script
-            	Add-Content $(".\install_" + $applicationName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCodeText) -Force | Out-Null
+            #Add to install script
+            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCode) -Force | Out-Null
 
-            	#Add to test script
-            	Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCodeText) -Force | Out-Null
-        	}
+            #Add to test script
+            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCode) -Force | Out-Null
+        }
 
-			#Add to end of test script
-			Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") -Value $("`n" + 'Write-Host -ForegroundColor Green "Done!"' +"`n" + 'Start-Sleep -s 5')
+		#Add to end of test script
+		Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n" + 'Write-Host -ForegroundColor Green "Done!"' +"`n" + 'Start-Sleep -s 5')
 
-            #Compile Test Scripts
-            PS2EXE $(".\_TEST_YOUR_APPLICATION\" + "test_" + $applicationName + ".ps1") $(".\_TEST_YOUR_APPLICATION\_TEST_RUN_AS_ADMIN_" + $applicationName + ".exe")
+        #Compile Test Scripts
+        PS2EXE $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") $(".\_TEST_YOUR_APPLICATION\_TEST_RUN_AS_ADMIN_" + $installationFileName + ".exe") | Out-Null
 			
-			$complete = "true"
-            Write-Host -ForegroundColor Green "`nSuccess!"
+		$complete = "true"
+        Write-Host -ForegroundColor Green "`nSuccess!"
         }
     }
 
+#XAML Input
+$inputXML = @"
+<Window x:Name="Script_Generator_Menu" x:Class="ScriptGeneratorGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ScriptGeneratorGUI"
+        mc:Ignorable="d"
+        Title="Script Generator" Height="567.857" Width="577.578" Background="Black" FontFamily="Segoe UI Light" FontSize="16">
+    <Grid Margin="0,0,2,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBlock x:Name="IntroText" HorizontalAlignment="Left" Margin="14,10,0,0" TextWrapping="Wrap" Text="Script Generator " VerticalAlignment="Top" Height="22" Width="507" Foreground="White" Grid.Column="3" FontFamily="Segoe UI Black"/>
+        <Label x:Name="InstallationFile_Label" Content="Select your installation file:" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Background="Black" Foreground="White" Grid.Column="3" Height="31" Width="211" FontFamily="Segoe UI Semibold"/>
+        <Label x:Name="Switch_Label" Content="Enter your installation switches:" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Background="Black" Foreground="White" Grid.Column="3" Height="31" Width="247" FontFamily="Segoe UI Semibold"/>
+        <ComboBox x:Name="InstallationFile_ComboBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Margin="285,45,0,0" VerticalAlignment="Top" Width="250"/>
+        <TextBox x:Name="Switches" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="285,75,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5"/>
 
+        <CheckBox x:Name="StartMenu_CheckBox" Grid.ColumnSpan="4" Content="Add Start Menu shortcut?" HorizontalAlignment="Left" Margin="14,120,0,0" VerticalAlignment="Top" Foreground="White" FontWeight="Bold" FontFamily="Segoe UI Semibold"/>
+        <CheckBox x:Name="Desktop_CheckBox" Grid.ColumnSpan="4" Content="Add Public Desktop shortcut?" HorizontalAlignment="Left" Margin="12,175,0,0" VerticalAlignment="Top" Foreground="White" FontWeight="Bold" FontFamily="Segoe UI Semibold"/>
+        <CheckBox x:Name="Copy_CheckBox" Grid.ColumnSpan="4" Content="Copy a Folder/File?" HorizontalAlignment="Left" Margin="12,230,0,0" VerticalAlignment="Top" Foreground="White" FontWeight="Bold" FontFamily="Segoe UI Semibold"/>
+        <CheckBox x:Name="ExtraCode_CheckBox" Grid.ColumnSpan="4" Content="Add extra code?" HorizontalAlignment="Left" Margin="10,309,0,0" VerticalAlignment="Top" Foreground="White" FontWeight="Bold" FontFamily="Segoe UI Semibold"/>
+
+        <Label x:Name="StartMenu_Label" Grid.ColumnSpan="4" Content="Shortcut Filename (including extension):" HorizontalAlignment="Left" Margin="32,140,0,0" VerticalAlignment="Top" Width="253" Foreground="White" FontSize="14" Visibility="Hidden"/>
+        <Label x:Name="Desktop_Label" Grid.ColumnSpan="4" Content="Shortcut Filename (including extension):" HorizontalAlignment="Left" Margin="32,195,0,0" VerticalAlignment="Top" Width="253" Foreground="White" FontSize="14" Visibility="Hidden"/>
+        <Label x:Name="Copy_Label" Grid.ColumnSpan="4" Content="File/Folder Path:" HorizontalAlignment="Left" Margin="32,250,0,0" VerticalAlignment="Top" Width="253" Foreground="White" FontSize="14" Visibility="Hidden"/>
+        <Label x:Name="CopyDestination_Label" Grid.ColumnSpan="4" Content="Destination Path:" HorizontalAlignment="Left" Margin="32,280,0,0" VerticalAlignment="Top" Width="253" Foreground="White" FontSize="14" Visibility="Hidden"/>
+        <Label x:Name="ExtraCode_Label" Grid.ColumnSpan="4" Content="Insert other code (use Enter to disguish different lines):" HorizontalAlignment="Left" Margin="120,329,0,0" VerticalAlignment="Top" Width="329" Foreground="White" FontSize="14" Visibility="Hidden"/>
+
+        <TextBox x:Name="StartMenuShortcut_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="285,143,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5" Visibility="Hidden"/>
+        <TextBox x:Name="DesktopShortcut_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="285,198,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5" Visibility="Hidden"/>
+        <TextBox x:Name="Copy_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="185,250,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5" Visibility="Hidden"/>
+        <TextBox x:Name="CopyDestination_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="185,280,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5" Visibility="Hidden"/>
+        <TextBox x:Name="ExtraCode_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="118" Margin="32,358,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="503" Background="#FFE5E5E5" AcceptsReturn="True" Visibility="Hidden"/>
+        <Label x:Name="Author" Grid.ColumnSpan="4" Content="Austin Webber, UWRF" HorizontalAlignment="Left" Margin="433,9,0,0" VerticalAlignment="Top" Width="101" Background="Black" Foreground="Red" FontSize="10"/>
+        <Button x:Name="Generate_Button" Content="Generate" Grid.Column="3" HorizontalAlignment="Left" Margin="140,502,0,0" VerticalAlignment="Top" Width="280" Height="25" Background="#FF84FF8A" FontWeight="Bold" IsEnabled="False"/>
+
+
+    </Grid>
+</Window>
+
+"@ 
+ 
+$inputXML = $inputXML -replace 'mc:Ignorable="d"','' -replace "x:N",'N' -replace '^<Win.*', '<Window'
+[void][System.Reflection.Assembly]::LoadWithPartialName('presentationframework')
+[xml]$XAML = $inputXML
+#Read XAML
+ 
+$reader=(New-Object System.Xml.XmlNodeReader $xaml)
+try{
+    $Form=[Windows.Markup.XamlReader]::Load( $reader )
 }
-
-#Data fields
-$confirm = ""
-$installationFile = ""
-$outsideofWorkingDirectory = ""
-$itemList = 0
-$complete = "false"
-
-#Loop until user decides whether to use a file in the current directory, or another file
-while ($confirm -ne "y") {
-
-    #Welcome
-    Write-Host -ForegroundColor Green "`nWelcome to Austin's Script Generator!"
-    Write-Host "`nThis program generates scripts and test applications all based off user input."
-    Write-Host "`nMake sure to run your test application as administrator!"
-    Write-Host "`nPlease let me know if anything is broken. :)"
-
-    #Print Files that are .exe or .msi in the current directory
-    Write-Host "`nCurrent Installation Files in Directory:`n" -ForegroundColor Green
-    Get-ChildItem .\* -Include *.exe, *.msi -Exclude "ScriptGenerator.exe" | Select-Object -Property Name | ForEach-Object {"Index "+ "$itemList" + ": " + $_.Name; $itemList+=1} | Format-List
-
-    #Ask user if they would like to use a file in the current directory or not
-    Write-Host "`nIs the installer you want to package listed above?" -ForegroundColor Yellow
-    $confirm = Read-Host "(Y/N)"
-
-    #If they chose to package a file not listed, manually specify the installation filename
-    if ($confirm -eq "n") {
-        #Prompt user to enter the installation filename
-        $installationFile = Verification -prompt "Please enter the installation filename you would like to package. (including the file extension)" -inputType "Filename"
-        $outsideofWorkingDirectory = "true"
-        $confirm = "y"
-    }
-
+catch{
+    Write-Warning "Unable to parse XML, with error: $($Error[0])`n Ensure that there are NO SelectionChanged or TextChanged properties in your textboxes (PowerShell cannot process them)"
+    throw
 }
+ 
 
-#If a user decides to use a file listed in the current directory, choose file by calling getCWDInstallationFile
-if ($installationFile -eq "") {
-        $installationFile = getCWDInstallationFile -Include *.exe, *.msi -Exclude "ScriptGenerator.exe"
+# Load XAML Objects In PowerShell 
+$xaml.SelectNodes("//*[@Name]") | %{"trying item $($_.Name)";
+    try {Set-Variable -Name "WPF$($_.Name)" -Value $Form.FindName($_.Name) -ErrorAction Stop}
+    catch{throw}
+    } | Out-Null
+
+#Add code to GUI
+
+#If the user doesn't select an installation file
+$WPFInstallationFile_ComboBox.Add_DropDownClosed({if ($WPFInstallationFile_ComboBox.SelectedValue -ne $null) {$WPFGenerate_Button.IsEnabled = $true} else {$WPFGenerate_Button.IsEnabled = $false}}) 
+
+#Populate Installation File ComboBox                                                                
+$InstallationFileList = Get-ChildItem .\* -Include *.exe, *.msi -Exclude "ScriptGenerator.exe" | Select-Object -ExpandProperty Name
+$InstallationFileList | ForEach-Object {$WPFInstallationFile_ComboBox.AddChild($_)}
+
+#Handle Start Menu Shortcut CheckBox interactions
+$WPFStartMenu_CheckBox.Add_Checked({if ($WPFStartMenu_Label.Visibility -ne 'Visible'){$WPFStartMenu_Label.Visibility, $WPFStartMenuShortcut_TextBox.Visibility = 'Visible','Visible'}})
+$WPFStartMenu_CheckBox.Add_UnChecked({if ($WPFStartMenu_Label.Visibility -eq 'Visible'){$WPFStartMenu_Label.Visibility, $WPFStartMenuShortcut_TextBox.Visibility = 'Hidden','Hidden'}})
+
+#Handle Desktop Shortcut CheckBox interactions
+$WPFDesktop_CheckBox.Add_Checked({if ($WPFDesktop_Label.Visibility -ne 'Visible'){$WPFDesktop_Label.Visibility, $WPFDesktopShortcut_TextBox.Visibility = 'Visible','Visible'}})
+$WPFDesktop_CheckBox.Add_UnChecked({if ($WPFDesktop_Label.Visibility -eq 'Visible'){$WPFDesktop_Label.Visibility, $WPFDesktopShortcut_TextBox.Visibility = 'Hidden','Hidden'}})
+
+#Handle Copy File CheckBox interactions
+$WPFCopy_CheckBox.Add_Checked({if ($WPFCopy_Label.Visibility -ne 'Visible'){
+    $WPFCopy_Label.Visibility = 'Visible'
+    $WPFCopy_TextBox.Visibility = 'Visible'
+    $WPFCopyDestination_Label.Visibility = 'Visible'
+    $WPFCopyDestination_TextBox.Visibility = 'Visible'
+}})
+$WPFCopy_CheckBox.Add_UnChecked({if ($WPFCopy_Label.Visibility -eq 'Visible'){
+    $WPFCopy_Label.Visibility = 'Hidden'
+    $WPFCopy_TextBox.Visibility = 'Hidden'
+    $WPFCopyDestination_Label.Visibility = 'Hidden'
+    $WPFCopyDestination_TextBox.Visibility = 'Hidden'
+}})
+
+#Handle Extra Code CheckBox interactions
+$WPFExtraCode_CheckBox.Add_Checked({if ($WPFExtraCode_Label.Visibility -ne 'Visible'){$WPFExtraCode_Label.Visibility, $WPFExtraCode_TextBox.Visibility = 'Visible','Visible'}})
+$WPFExtraCode_CheckBox.Add_UnChecked({if ($WPFExtraCode_Label.Visibility -eq 'Visible'){$WPFExtraCode_Label.Visibility, $WPFExtraCode_TextBox.Visibility = 'Hidden','Hidden'}})
+
+#Handle Generation Button
+$WPFGenerate_Button.Add_Click({
+if ($WPFStartMenu_CheckBox.IsChecked -eq $false) {$WPFStartMenuShortcut_TextBox.Text = "UserInputNull"}
+if ($WPFDesktop_CheckBox.IsChecked -eq $false) {$WPFDesktopShortcut_TextBox.Text = "UserInputNull"}
+if ($WPFCopy_CheckBox.IsChecked -eq $false) {
+$WPFCopyDestination_TextBox.Text = "UserInputNull"
+$WPFCopy_TextBox.Text = "UserInputNull"
 }
+if ($WPFExtraCode_CheckBox.IsChecked -eq $false) {$WPFExtraCode_TextBox.Text = "UserInputNull"}
 
-#If a user selects an .msi installation file
-if ($installationFile -match '.msi' -and $outsideofWorkingDirectory -ne "true" -and $complete -match 'false') {
+#Gather MSI productCode
+if ($WPFInstallationFile_ComboBox.Text -match '.msi') {$productCode = getMSIData -Path $WPFInstallationFile_ComboBox.Text -Property ProductCode}
 
-    #Gather MSI Information
-    $productName = getMSIData -Path $installationFile -Property ProductName
-    $productCode = getMSIData -Path $installationFile -Property ProductCode
-    $productVersion = getMSIData -Path $installationFile -Property ProductVersion
-    $productManu = getMSIData -Path $installationFile -Property Manufacturer
-    $installationData = @($installationFile, $productName, $productCode, $productVersion, $productManu)
-  
-    #Print out MSI Information
-    Write-Host -ForegroundColor Cyan "`nMiscellaneous Data about your MSI"
-    Write-Host "`nProduct Name:        $($installationData[1]) 
-    `nProduct Manufacturer:$($installationData[4]) 
-    `nProduct Version:     $($installationData[3])
-    `nInstaller Location:     $($installationData[0]) 
-    `nProduct Code:        $($installationData[2])"
+#Generate Script
+generateScript -Switches $WPFSwitches.Text -installationFileLocation $WPFInstallationFile_ComboBox.Text -productCode $productCode -desktopIconName $WPFDesktopShortcut_TextBox.Text -startMenuShortcut $WPFStartMenuShortcut_TextBox.Text -copyOverFile $WPFCopy_TextBox.Text -copyIntoDirectory $WPFCopyDestination_TextBox.Text -extraCode $WPFExtraCode_TextBox.Text
 
-    #Ask for MSI switches
-    $MSISwitchesInput = Verification -prompt "Please enter switches you would like to apply to your installation script. (Enter nothing for default MSI switches.)" -inputType "Switches"
-    if ($MSISwitchesInput -eq "") {
-        #If a user inputs nothing, use default MSI switches
-        Write-Host -ForegroundColor Yellow "`nAdding default MSI switches..."
-        $MSISwitchesInput = "/qn /norestart"
-    }
-    
+#Close form
+$Form.Close()
+})
+ 
 
-    #Replace any quotes in switches with correct quotes
-    $MSISwitchesInput = $MSISwitchesInput.replace('"',"'")
+#Show form
+$Form.ShowDialog() | Out-Null
 
-    #Generate MSI Scripts
-    generateScript -switches $MSISwitchesInput -installationFileLocation $installationFile -productCode $productCode
 
-	$complete = "true"
-}
 
-#If a user selects an .exe installation file
-if ($installationFile -match '.exe' -and $outsideofWorkingDirectory -ne "true" -and $complete -match 'false') {
 
-    #Gather EXE data
-    $productDescription = (Get-ChildItem $installationFile).VersionInfo | Select-Object -ExpandProperty FileDescription
-    $productVersion = (Get-ChildItem $installationFile).VersionInfo | Select-Object -ExpandProperty FileVersion
-    $productManu = (Get-ChildItem $installationFile).VersionInfo | Select-Object -ExpandProperty CompanyName
-
-    #Print out EXE information
-    Write-Host -ForegroundColor Cyan "`nMiscellaneous Data about your EXE"
-    $installationData = @($productDescription, $productManu, $productVersion, $installationFile)
-    Write-Host "`nProduct Description:  $($installationData[0])
-    `nProduct Manufacturer: $($installationData[1])
-    `nProduct Version:      $($installationData[2])
-    `nInstaller Location:   $($installationData[3])"
-
-    #Ask for EXE switches
-    $EXESwitchesInput = Verification -prompt "Please enter switches you would like to apply to your installation script. (Enter nothing for a default EXE switch.)" -inputType "Switches"
-    if ($EXESwitchesInput -eq "") {
-        #If a user inputs nothing, use default EXE switches
-        Write-Host -ForegroundColor Yellow "`nAdding default EXE switch..."
-        $EXESwitchesInput = "/S"
-    }
-
-	#Replace any quotes in switches with correct quotes
-    $EXESwitchesInput = $EXESwitchesInput.replace('"',"'")
-
-    #Generate EXE script
-    generateScript -switches $EXESwitchesInput -installationFileLocation $installationFile
-
-	$complete = "true"
-}
-
-if ($installationFile -match '.exe' -and $outsideofWorkingDirectory -eq "true" -and $complete -match 'false') {
-    #Ask for EXE switches
-    $EXESwitchesInput = Verification -prompt "Please enter switches you would like to apply to your installation script. (Enter nothing for a default EXE switch.)" -inputType "Switches"
-    if ($EXESwitchesInput -eq "") {
-        #If a user inputs nothing, use default EXE switches
-        Write-Host -ForegroundColor Yellow "`nAdding default EXE switch..."
-        $EXESwitchesInput = "/S"
-    }
-
-	#Replace any quotes in switches with correct quotes
-    $EXESwitchesInput = $EXESwitchesInput.replace('"',"'")
-
-    #Generate EXE script
-    generateScript -switches $EXESwitchesInput -installationFileLocation $installationFile -outsideofWD true
-
-	$complete = "true"
-}
-
-if ($installationFile -match '.msi' -and $outsideofWorkingDirectory -eq "true" -and $complete -match 'false') {
-    Write-Host -ForegroundColor Red "`nDon't package an MSI outside of the working directory, it will make this so much harder."
-
-	$complete = "true"
-}
 
