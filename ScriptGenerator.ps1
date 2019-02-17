@@ -1,20 +1,43 @@
 #Script Generator
-#11/10/2018 Austin Webber
+#2/17/2019 Austin Webber
 #9/18/2018
 
 #Resources Used: 
 #MSI Information Grabber: http://www.scconfigmgr.com/2014/08/22/how-to-get-msi-file-information-with-powershell/
 #PS2EXE-GUI: https://gallery.technet.microsoft.com/scriptcenter/PS2EXE-GUI-Convert-e7cb69d5
 #Create Shortcuts: https://www.pdq.com/blog/pdq-deploy-and-powershell/
+#File Selection: https://blogs.technet.microsoft.com/heyscriptingguy/2009/09/01/hey-scripting-guy-can-i-open-a-file-dialog-box-with-windows-powershell/
 
 #Converts PS to EXE
 #Source https://gallery.technet.microsoft.com/scriptcenter/PS2EXE-GUI-Convert-e7cb69d5
-function PS2EXE {
-Param([string]$inputFile=$null, [string]$outputFile=$null, [switch]$verbose, [switch] $debug, [switch]$runtime20, [switch]$runtime40,
-	[switch]$x86, [switch]$x64, [int]$lcid, [switch]$Sta, [switch]$Mta, [switch]$noConsole, [switch]$nested, [string]$iconFile=$null,
-	[string]$title, [string]$description, [string]$company, [string]$product, [string]$copyright, [string]$trademark, [string]$version,
-	[switch]$requireAdmin, [switch]$virtualize, [switch]$credentialGUI, [switch]$noConfigfile)
-
+function PS2EXE
+{
+	Param ([string]$inputFile = $null,
+		[string]$outputFile = $null,
+		[switch]$verbose,
+		[switch]$debug,
+		[switch]$runtime20,
+		[switch]$runtime40,
+		[switch]$x86,
+		[switch]$x64,
+		[int]$lcid,
+		[switch]$Sta,
+		[switch]$Mta,
+		[switch]$noConsole,
+		[switch]$nested,
+		[string]$iconFile = $null,
+		[string]$title,
+		[string]$description,
+		[string]$company,
+		[string]$product,
+		[string]$copyright,
+		[string]$trademark,
+		[string]$version,
+		[switch]$requireAdmin,
+		[switch]$virtualize,
+		[switch]$credentialGUI,
+		[switch]$noConfigfile)
+	
 <################################################################################>
 <##                                                                            ##>
 <##      PS2EXE-GUI v0.5.0.13                                                  ##>
@@ -26,351 +49,358 @@ Param([string]$inputFile=$null, [string]$outputFile=$null, [switch]$verbose, [sw
 <##          http://www.microsoft.com/opensource/licenses.mspx#Ms-PL           ##>
 <##                                                                            ##>
 <################################################################################>
-
-
-if (!$nested)
-{
-	Write-Host "PS2EXE-GUI v0.5.0.13 by Ingo Karstein, reworked and GUI support by Markus Scholtes"
-}
-else
-{
-	Write-Host "PowerShell 2.0 environment started..."
-}
-Write-Host ""
-
-if ($runtime20 -and $runtime40)
-{
-	Write-Host "You cannot use switches -runtime20 and -runtime40 at the same time!"
-	exit -1
-}
-
-if ($Sta -and $Mta)
-{
-	Write-Host "You cannot use switches -Sta and -Mta at the same time!"
-	exit -1
-}
-
-if ([string]::IsNullOrEmpty($inputFile) -or [string]::IsNullOrEmpty($outputFile))
-{
-	Write-Host "Usage:"
-	Write-Host ""
-	Write-Host "powershell.exe -command ""&'.\ps2exe.ps1' [-inputFile] '<file_name>' [-outputFile] '<file_name>' [-verbose]"
-	Write-Host "               [-debug] [-runtime20|-runtime40] [-lcid <id>] [-x86|-x64] [-Sta|-Mta] [-noConsole]"
-	Write-Host "               [-credentialGUI] [-iconFile '<file_name>'] [-title '<title>'] [-description '<description>']"
-	Write-Host "               [-company '<company>'] [-product '<product>'] [-copyright '<copyright>'] [-trademark '<trademark>']"
-	Write-Host "               [-version '<version>'] [-noConfigfile] [-requireAdmin] [-virtualize]"""
-	Write-Host ""
-	Write-Host "    inputFile = Powershell script that you want to convert to EXE"
-	Write-Host "   outputFile = destination EXE file name"
-	Write-Host "      verbose = output verbose informations - if any"
-	Write-Host "        debug = generate debug informations for output file"
-	Write-Host "    runtime20 = this switch forces PS2EXE to create a config file for the generated EXE that contains the"
-	Write-Host "                ""supported .NET Framework versions"" setting for .NET Framework 2.0/3.x for PowerShell 2.0"
-	Write-Host "    runtime40 = this switch forces PS2EXE to create a config file for the generated EXE that contains the"
-	Write-Host "                ""supported .NET Framework versions"" setting for .NET Framework 4.x for PowerShell 3.0 or higher"
-	Write-Host "         lcid = location ID for the compiled EXE. Current user culture if not specified"
-	Write-Host "          x86 = compile for 32-bit runtime only"
-	Write-Host "          x64 = compile for 64-bit runtime only"
-	Write-Host "          sta = Single Thread Apartment Mode"
-	Write-Host "          mta = Multi Thread Apartment Mode"
-	Write-Host "    noConsole = the resulting EXE file will be a Windows Forms app without a console window"
-	Write-Host "credentialGUI = use GUI for prompting credentials in console mode"
-	Write-Host "     iconFile = icon file name for the compiled EXE"
-	Write-Host "        title = title information (displayed in details tab of Windows Explorer's properties dialog)"
-	Write-Host "  description = description information (not displayed, but embedded in executable)"
-	Write-Host "      company = company information (not displayed, but embedded in executable)"
-	Write-Host "      product = product information (displayed in details tab of Windows Explorer's properties dialog)"
-	Write-Host "    copyright = copyright information (displayed in details tab of Windows Explorer's properties dialog)"
-	Write-Host "    trademark = trademark information (displayed in details tab of Windows Explorer's properties dialog)"
-	Write-Host "      version = version information (displayed in details tab of Windows Explorer's properties dialog)"
-	Write-Host " noConfigfile = write no config file (<outputfile>.exe.config)"
-	Write-Host " requireAdmin = if UAC is enabled, compiled EXE run only in elevated context (UAC dialog appears if required)"
-	Write-Host "   virtualize = application virtualization is activated (forcing x86 runtime)"
-	Write-Host ""
-	Write-Host "Input file or output file not specified!"
-	exit -1
-}
-
-$psversion = 0
-if ($PSVersionTable.PSVersion.Major -ge 4)
-{
-	$psversion = 4
-	Write-Host "You are using PowerShell 4.0 or above."
-}
-
-if ($PSVersionTable.PSVersion.Major -eq 3)
-{
-	$psversion = 3
-	Write-Host "You are using PowerShell 3.0."
-}
-
-if ($PSVersionTable.PSVersion.Major -eq 2)
-{
-	$psversion = 2
-	Write-Host "You are using PowerShell 2.0."
-}
-
-if ($psversion -eq 0)
-{
-	Write-Host "The powershell version is unknown!"
-	exit -1
-}
-
-# retrieve absolute paths independent whether path is given relative oder absolute
-$inputFile = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($inputFile)
-$outputFile = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($outputFile)
-
-if (!(Test-Path $inputFile -PathType Leaf))
-{
-	Write-Host "Input file $($inputfile) not found!"
-	exit -1
-}
-
-if ($inputFile -eq $outputFile)
-{
-	Write-Host "Input file is identical to output file!"
-	exit -1
-}
-
-if (!([string]::IsNullOrEmpty($iconFile)))
-{
-	# retrieve absolute path independent whether path is given relative oder absolute
-	$iconFile = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($iconFile)
-
-	if (!(Test-Path $iconFile -PathType Leaf))
+	
+	
+	if (!$nested)
 	{
-		Write-Host "Icon file $($iconFile) not found!"
-		exit -1
-	}
-}
-
-if ($requireAdmin -And $virtualize)
-{
-	Write-Host "-requireAdmin cannot be combined with -virtualize"
-	exit -1
-}
-
-if (!$runtime20 -and !$runtime40)
-{
-	if ($psversion -eq 4)
-	{
-		$runtime40 = $TRUE
-	}
-	elseif ($psversion -eq 3)
-	{
-		$runtime40 = $TRUE
+		Write-Host "PS2EXE-GUI v0.5.0.13 by Ingo Karstein, reworked and GUI support by Markus Scholtes"
 	}
 	else
 	{
-		$runtime20 = $TRUE
+		Write-Host "PowerShell 2.0 environment started..."
 	}
-}
-
-if ($psversion -ge 3 -and $runtime20)
-{
-	Write-Host "To create an EXE file for PowerShell 2.0 on PowerShell 3.0 or above this script now launches PowerShell 2.0..."
 	Write-Host ""
-
-	$arguments = "-inputFile '$($inputFile)' -outputFile '$($outputFile)' -nested "
-
-	if ($verbose) { $arguments += "-verbose "}
-	if ($debug) { $arguments += "-debug "}
-	if ($runtime20) { $arguments += "-runtime20 "}
-	if ($x86) { $arguments += "-x86 "}
-	if ($x64) { $arguments += "-x64 "}
-	if ($lcid) { $arguments += "-lcid $lcid "}
-	if ($Sta) { $arguments += "-Sta "}
-	if ($Mta) { $arguments += "-Mta "}
-	if ($noConsole) { $arguments += "-noConsole "}
-	if (!([string]::IsNullOrEmpty($iconFile))) { $arguments += "-iconFile '$($iconFile)' "}
-	if (!([string]::IsNullOrEmpty($title))) { $arguments += "-title '$($title)' "}
-	if (!([string]::IsNullOrEmpty($description))) { $arguments += "-description '$($description)' "}
-	if (!([string]::IsNullOrEmpty($company))) { $arguments += "-company '$($company)' "}
-	if (!([string]::IsNullOrEmpty($product))) { $arguments += "-product '$($product)' "}
-	if (!([string]::IsNullOrEmpty($copyright))) { $arguments += "-copyright '$($copyright)' "}
-	if (!([string]::IsNullOrEmpty($trademark))) { $arguments += "-trademark '$($trademark)' "}
-	if (!([string]::IsNullOrEmpty($version))) { $arguments += "-version '$($version)' "}
-	if ($requireAdmin) { $arguments += "-requireAdmin "}
-	if ($virtualize) { $arguments += "-virtualize "}
-	if ($credentialGUI) { $arguments += "-credentialGUI "}
-	if ($noConfigfile) { $arguments += "-noConfigfile "}
-
-	if ($MyInvocation.MyCommand.CommandType -eq "ExternalScript")
-	{	# ps2exe.ps1 is running (script)
-		$jobScript = @"
+	
+	if ($runtime20 -and $runtime40)
+	{
+		Write-Host "You cannot use switches -runtime20 and -runtime40 at the same time!"
+		exit -1
+	}
+	
+	if ($Sta -and $Mta)
+	{
+		Write-Host "You cannot use switches -Sta and -Mta at the same time!"
+		exit -1
+	}
+	
+	if ([string]::IsNullOrEmpty($inputFile) -or [string]::IsNullOrEmpty($outputFile))
+	{
+		Write-Host "Usage:"
+		Write-Host ""
+		Write-Host "powershell.exe -command ""&'.\ps2exe.ps1' [-inputFile] '<file_name>' [-outputFile] '<file_name>' [-verbose]"
+		Write-Host "               [-debug] [-runtime20|-runtime40] [-lcid <id>] [-x86|-x64] [-Sta|-Mta] [-noConsole]"
+		Write-Host "               [-credentialGUI] [-iconFile '<file_name>'] [-title '<title>'] [-description '<description>']"
+		Write-Host "               [-company '<company>'] [-product '<product>'] [-copyright '<copyright>'] [-trademark '<trademark>']"
+		Write-Host "               [-version '<version>'] [-noConfigfile] [-requireAdmin] [-virtualize]"""
+		Write-Host ""
+		Write-Host "    inputFile = Powershell script that you want to convert to EXE"
+		Write-Host "   outputFile = destination EXE file name"
+		Write-Host "      verbose = output verbose informations - if any"
+		Write-Host "        debug = generate debug informations for output file"
+		Write-Host "    runtime20 = this switch forces PS2EXE to create a config file for the generated EXE that contains the"
+		Write-Host "                ""supported .NET Framework versions"" setting for .NET Framework 2.0/3.x for PowerShell 2.0"
+		Write-Host "    runtime40 = this switch forces PS2EXE to create a config file for the generated EXE that contains the"
+		Write-Host "                ""supported .NET Framework versions"" setting for .NET Framework 4.x for PowerShell 3.0 or higher"
+		Write-Host "         lcid = location ID for the compiled EXE. Current user culture if not specified"
+		Write-Host "          x86 = compile for 32-bit runtime only"
+		Write-Host "          x64 = compile for 64-bit runtime only"
+		Write-Host "          sta = Single Thread Apartment Mode"
+		Write-Host "          mta = Multi Thread Apartment Mode"
+		Write-Host "    noConsole = the resulting EXE file will be a Windows Forms app without a console window"
+		Write-Host "credentialGUI = use GUI for prompting credentials in console mode"
+		Write-Host "     iconFile = icon file name for the compiled EXE"
+		Write-Host "        title = title information (displayed in details tab of Windows Explorer's properties dialog)"
+		Write-Host "  description = description information (not displayed, but embedded in executable)"
+		Write-Host "      company = company information (not displayed, but embedded in executable)"
+		Write-Host "      product = product information (displayed in details tab of Windows Explorer's properties dialog)"
+		Write-Host "    copyright = copyright information (displayed in details tab of Windows Explorer's properties dialog)"
+		Write-Host "    trademark = trademark information (displayed in details tab of Windows Explorer's properties dialog)"
+		Write-Host "      version = version information (displayed in details tab of Windows Explorer's properties dialog)"
+		Write-Host " noConfigfile = write no config file (<outputfile>.exe.config)"
+		Write-Host " requireAdmin = if UAC is enabled, compiled EXE run only in elevated context (UAC dialog appears if required)"
+		Write-Host "   virtualize = application virtualization is activated (forcing x86 runtime)"
+		Write-Host ""
+		Write-Host "Input file or output file not specified!"
+		exit -1
+	}
+	
+	$psversion = 0
+	if ($PSVersionTable.PSVersion.Major -ge 4)
+	{
+		$psversion = 4
+		Write-Host "You are using PowerShell 4.0 or above."
+	}
+	
+	if ($PSVersionTable.PSVersion.Major -eq 3)
+	{
+		$psversion = 3
+		Write-Host "You are using PowerShell 3.0."
+	}
+	
+	if ($PSVersionTable.PSVersion.Major -eq 2)
+	{
+		$psversion = 2
+		Write-Host "You are using PowerShell 2.0."
+	}
+	
+	if ($psversion -eq 0)
+	{
+		Write-Host "The powershell version is unknown!"
+		exit -1
+	}
+	
+	# retrieve absolute paths independent whether path is given relative oder absolute
+	$inputFile = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($inputFile)
+	$outputFile = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($outputFile)
+	
+	if (!(Test-Path $inputFile -PathType Leaf))
+	{
+		Write-Host "Input file $($inputfile) not found!"
+		exit -1
+	}
+	
+	if ($inputFile -eq $outputFile)
+	{
+		Write-Host "Input file is identical to output file!"
+		exit -1
+	}
+	
+	if (!([string]::IsNullOrEmpty($iconFile)))
+	{
+		# retrieve absolute path independent whether path is given relative oder absolute
+		$iconFile = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($iconFile)
+		
+		if (!(Test-Path $iconFile -PathType Leaf))
+		{
+			Write-Host "Icon file $($iconFile) not found!"
+			exit -1
+		}
+	}
+	
+	if ($requireAdmin -And $virtualize)
+	{
+		Write-Host "-requireAdmin cannot be combined with -virtualize"
+		exit -1
+	}
+	
+	if (!$runtime20 -and !$runtime40)
+	{
+		if ($psversion -eq 4)
+		{
+			$runtime40 = $TRUE
+		}
+		elseif ($psversion -eq 3)
+		{
+			$runtime40 = $TRUE
+		}
+		else
+		{
+			$runtime20 = $TRUE
+		}
+	}
+	
+	if ($psversion -ge 3 -and $runtime20)
+	{
+		Write-Host "To create an EXE file for PowerShell 2.0 on PowerShell 3.0 or above this script now launches PowerShell 2.0..."
+		Write-Host ""
+		
+		$arguments = "-inputFile '$($inputFile)' -outputFile '$($outputFile)' -nested "
+		
+		if ($verbose) { $arguments += "-verbose " }
+		if ($debug) { $arguments += "-debug " }
+		if ($runtime20) { $arguments += "-runtime20 " }
+		if ($x86) { $arguments += "-x86 " }
+		if ($x64) { $arguments += "-x64 " }
+		if ($lcid) { $arguments += "-lcid $lcid " }
+		if ($Sta) { $arguments += "-Sta " }
+		if ($Mta) { $arguments += "-Mta " }
+		if ($noConsole) { $arguments += "-noConsole " }
+		if (!([string]::IsNullOrEmpty($iconFile))) { $arguments += "-iconFile '$($iconFile)' " }
+		if (!([string]::IsNullOrEmpty($title))) { $arguments += "-title '$($title)' " }
+		if (!([string]::IsNullOrEmpty($description))) { $arguments += "-description '$($description)' " }
+		if (!([string]::IsNullOrEmpty($company))) { $arguments += "-company '$($company)' " }
+		if (!([string]::IsNullOrEmpty($product))) { $arguments += "-product '$($product)' " }
+		if (!([string]::IsNullOrEmpty($copyright))) { $arguments += "-copyright '$($copyright)' " }
+		if (!([string]::IsNullOrEmpty($trademark))) { $arguments += "-trademark '$($trademark)' " }
+		if (!([string]::IsNullOrEmpty($version))) { $arguments += "-version '$($version)' " }
+		if ($requireAdmin) { $arguments += "-requireAdmin " }
+		if ($virtualize) { $arguments += "-virtualize " }
+		if ($credentialGUI) { $arguments += "-credentialGUI " }
+		if ($noConfigfile) { $arguments += "-noConfigfile " }
+		
+		if ($MyInvocation.MyCommand.CommandType -eq "ExternalScript")
+		{
+			# ps2exe.ps1 is running (script)
+			$jobScript = @"
 ."$($PSHOME)\powershell.exe" -version 2.0 -command "&'$($MyInvocation.MyCommand.Path)' $($arguments)"
 "@
+		}
+		else
+		{
+			# ps2exe.exe is running (compiled script)
+			Write-Host "The parameter -runtime20 is not supported for compiled ps2exe.ps1 scripts."
+			Write-Host "Compile ps2exe.ps1 with parameter -runtime20 and call the generated executable (without -runtime20)."
+			exit -1
+		}
+		
+		Invoke-Expression $jobScript
+		
+		exit 0
 	}
-	else
-	{ # ps2exe.exe is running (compiled script)
-		Write-Host "The parameter -runtime20 is not supported for compiled ps2exe.ps1 scripts."
-		Write-Host "Compile ps2exe.ps1 with parameter -runtime20 and call the generated executable (without -runtime20)."
+	
+	if ($psversion -lt 3 -and $runtime40)
+	{
+		Write-Host "You need to run ps2exe in an Powershell 3.0 or higher environment to use parameter -runtime40"
+		Write-Host
 		exit -1
 	}
-
-	Invoke-Expression $jobScript
-
-	exit 0
-}
-
-if ($psversion -lt 3 -and $runtime40)
-{
-	Write-Host "You need to run ps2exe in an Powershell 3.0 or higher environment to use parameter -runtime40"
-	Write-Host
-	exit -1
-}
-
-if ($psversion -lt 3 -and !$Mta -and !$Sta)
-{
-	# Set default apartment mode for powershell version if not set by parameter
-	$Mta = $TRUE
-}
-
-if ($psversion -ge 3 -and !$Mta -and !$Sta)
-{
-	# Set default apartment mode for powershell version if not set by parameter
-	$Sta = $TRUE
-}
-
-# escape escape sequences in version info
-$title = $title -replace "\\", "\\"
-$product = $product -replace "\\", "\\"
-$copyright = $copyright -replace "\\", "\\"
-$trademark = $trademark -replace "\\", "\\"
-$description = $description -replace "\\", "\\"
-$company = $company -replace "\\", "\\"
-
-if (![string]::IsNullOrEmpty($version))
-{ # check for correct version number information
-	if ($version -notmatch "(^\d+\.\d+\.\d+\.\d+$)|(^\d+\.\d+\.\d+$)|(^\d+\.\d+$)|(^\d+$)")
+	
+	if ($psversion -lt 3 -and !$Mta -and !$Sta)
 	{
-		Write-Host "Version number has to be supplied in the form n.n.n.n, n.n.n, n.n or n (with n as number)!"
-		exit -1
+		# Set default apartment mode for powershell version if not set by parameter
+		$Mta = $TRUE
 	}
-}
-
-Write-Host ""
-
-$type = ('System.Collections.Generic.Dictionary`2') -as "Type"
-$type = $type.MakeGenericType( @( ("System.String" -as "Type"), ("system.string" -as "Type") ) )
-$o = [Activator]::CreateInstance($type)
-
-$compiler20 = $FALSE
-if ($psversion -eq 3 -or $psversion -eq 4)
-{
-	$o.Add("CompilerVersion", "v4.0")
-}
-else
-{
-	if (Test-Path ("$ENV:WINDIR\Microsoft.NET\Framework\v3.5\csc.exe"))
-	{ $o.Add("CompilerVersion", "v3.5") }
+	
+	if ($psversion -ge 3 -and !$Mta -and !$Sta)
+	{
+		# Set default apartment mode for powershell version if not set by parameter
+		$Sta = $TRUE
+	}
+	
+	# escape escape sequences in version info
+	$title = $title -replace "\\", "\\"
+	$product = $product -replace "\\", "\\"
+	$copyright = $copyright -replace "\\", "\\"
+	$trademark = $trademark -replace "\\", "\\"
+	$description = $description -replace "\\", "\\"
+	$company = $company -replace "\\", "\\"
+	
+	if (![string]::IsNullOrEmpty($version))
+	{
+		# check for correct version number information
+		if ($version -notmatch "(^\d+\.\d+\.\d+\.\d+$)|(^\d+\.\d+\.\d+$)|(^\d+\.\d+$)|(^\d+$)")
+		{
+			Write-Host "Version number has to be supplied in the form n.n.n.n, n.n.n, n.n or n (with n as number)!"
+			exit -1
+		}
+	}
+	
+	Write-Host ""
+	
+	$type = ('System.Collections.Generic.Dictionary`2') -as "Type"
+	$type = $type.MakeGenericType(@(("System.String" -as "Type"), ("system.string" -as "Type")))
+	$o = [Activator]::CreateInstance($type)
+	
+	$compiler20 = $FALSE
+	if ($psversion -eq 3 -or $psversion -eq 4)
+	{
+		$o.Add("CompilerVersion", "v4.0")
+	}
 	else
 	{
-		Write-Warning "No .Net 3.5 compiler found, using .Net 2.0 compiler."
-		Write-Warning "Therefore some methods are not available!"
-		$compiler20 = $TRUE
-		$o.Add("CompilerVersion", "v2.0")
+		if (Test-Path ("$ENV:WINDIR\Microsoft.NET\Framework\v3.5\csc.exe"))
+		{ $o.Add("CompilerVersion", "v3.5") }
+		else
+		{
+			Write-Warning "No .Net 3.5 compiler found, using .Net 2.0 compiler."
+			Write-Warning "Therefore some methods are not available!"
+			$compiler20 = $TRUE
+			$o.Add("CompilerVersion", "v2.0")
+		}
 	}
-}
-
-$referenceAssembies = @("System.dll")
-if (!$noConsole)
-{
-	if ([System.AppDomain]::CurrentDomain.GetAssemblies() | ? { $_.ManifestModule.Name -ieq "Microsoft.PowerShell.ConsoleHost.dll" })
+	
+	$referenceAssembies = @("System.dll")
+	if (!$noConsole)
 	{
-		$referenceAssembies += ([System.AppDomain]::CurrentDomain.GetAssemblies() | ? { $_.ManifestModule.Name -ieq "Microsoft.PowerShell.ConsoleHost.dll" } | Select -First 1).Location
+		if ([System.AppDomain]::CurrentDomain.GetAssemblies() | ? { $_.ManifestModule.Name -ieq "Microsoft.PowerShell.ConsoleHost.dll" })
+		{
+			$referenceAssembies += ([System.AppDomain]::CurrentDomain.GetAssemblies() | ? { $_.ManifestModule.Name -ieq "Microsoft.PowerShell.ConsoleHost.dll" } | Select -First 1).Location
+		}
 	}
-}
-$referenceAssembies += ([System.AppDomain]::CurrentDomain.GetAssemblies() | ? { $_.ManifestModule.Name -ieq "System.Management.Automation.dll" } | Select -First 1).Location
-
-if ($runtime40)
-{
-	$n = New-Object System.Reflection.AssemblyName("System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")
-	[System.AppDomain]::CurrentDomain.Load($n) | Out-Null
-	$referenceAssembies += ([System.AppDomain]::CurrentDomain.GetAssemblies() | ? { $_.ManifestModule.Name -ieq "System.Core.dll" } | Select -First 1).Location
-}
-
-if ($noConsole)
-{
-	$n = New-Object System.Reflection.AssemblyName("System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")
+	$referenceAssembies += ([System.AppDomain]::CurrentDomain.GetAssemblies() | ? { $_.ManifestModule.Name -ieq "System.Management.Automation.dll" } | Select -First 1).Location
+	
 	if ($runtime40)
 	{
-		$n = New-Object System.Reflection.AssemblyName("System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")
+		$n = New-Object System.Reflection.AssemblyName("System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")
+		[System.AppDomain]::CurrentDomain.Load($n) | Out-Null
+		$referenceAssembies += ([System.AppDomain]::CurrentDomain.GetAssemblies() | ? { $_.ManifestModule.Name -ieq "System.Core.dll" } | Select -First 1).Location
 	}
-	[System.AppDomain]::CurrentDomain.Load($n) | Out-Null
-
-	$n = New-Object System.Reflection.AssemblyName("System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")
-	if ($runtime40)
+	
+	if ($noConsole)
 	{
-		$n = New-Object System.Reflection.AssemblyName("System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")
+		$n = New-Object System.Reflection.AssemblyName("System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")
+		if ($runtime40)
+		{
+			$n = New-Object System.Reflection.AssemblyName("System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")
+		}
+		[System.AppDomain]::CurrentDomain.Load($n) | Out-Null
+		
+		$n = New-Object System.Reflection.AssemblyName("System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")
+		if ($runtime40)
+		{
+			$n = New-Object System.Reflection.AssemblyName("System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")
+		}
+		[System.AppDomain]::CurrentDomain.Load($n) | Out-Null
+		
+		$referenceAssembies += ([System.AppDomain]::CurrentDomain.GetAssemblies() | ? { $_.ManifestModule.Name -ieq "System.Windows.Forms.dll" } | Select -First 1).Location
+		$referenceAssembies += ([System.AppDomain]::CurrentDomain.GetAssemblies() | ? { $_.ManifestModule.Name -ieq "System.Drawing.dll" } | Select -First 1).Location
 	}
-	[System.AppDomain]::CurrentDomain.Load($n) | Out-Null
-
-	$referenceAssembies += ([System.AppDomain]::CurrentDomain.GetAssemblies() | ? { $_.ManifestModule.Name -ieq "System.Windows.Forms.dll" } | Select -First 1).Location
-	$referenceAssembies += ([System.AppDomain]::CurrentDomain.GetAssemblies() | ? { $_.ManifestModule.Name -ieq "System.Drawing.dll" } | Select -First 1).Location
-}
-
-$platform = "anycpu"
-if ($x64 -and !$x86) { $platform = "x64" } else { if ($x86 -and !$x64) { $platform = "x86" }}
-
-$cop = (New-Object Microsoft.CSharp.CSharpCodeProvider($o))
-$cp = New-Object System.CodeDom.Compiler.CompilerParameters($referenceAssembies, $outputFile)
-$cp.GenerateInMemory = $FALSE
-$cp.GenerateExecutable = $TRUE
-
-$iconFileParam = ""
-if (!([string]::IsNullOrEmpty($iconFile)))
-{
-	$iconFileParam = "`"/win32icon:$($iconFile)`""
-}
-
-$reqAdmParam = ""
-if ($requireAdmin)
-{
-	$win32manifest = "<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>`r`n<assembly xmlns=""urn:schemas-microsoft-com:asm.v1"" manifestVersion=""1.0"">`r`n<trustInfo xmlns=""urn:schemas-microsoft-com:asm.v2"">`r`n<security>`r`n<requestedPrivileges xmlns=""urn:schemas-microsoft-com:asm.v3"">`r`n<requestedExecutionLevel level=""requireAdministrator"" uiAccess=""false""/>`r`n</requestedPrivileges>`r`n</security>`r`n</trustInfo>`r`n</assembly>"
-	$win32manifest | Set-Content ($outputFile+".win32manifest") -Encoding UTF8
-
-	$reqAdmParam = "`"/win32manifest:$($outputFile+".win32manifest")`""
-}
-
-if (!$virtualize)
-{ $cp.CompilerOptions = "/platform:$($platform) /target:$( if ($noConsole){'winexe'}else{'exe'}) $($iconFileParam) $($reqAdmParam)" }
-else
-{ Write-Host "Application virtualization is activated, forcing x86 platfom."
-	$cp.CompilerOptions = "/platform:x86 /target:$( if ($noConsole) { 'winexe' } else { 'exe' } ) /nowin32manifest $($iconFileParam)"
-}
-
-$cp.IncludeDebugInformation = $debug
-
-if ($debug)
-{
-	$cp.TempFiles.KeepFiles = $TRUE
-}
-
-Write-Host "Reading input file " -NoNewline
-Write-Host $inputFile
-Write-Host ""
-$content = Get-Content -LiteralPath ($inputFile) -Encoding UTF8 -ErrorAction SilentlyContinue
-if ($content -eq $null)
-{
-	Write-Host "No data found. May be read error or file protected."
-	exit -2
-}
-$scriptInp = [string]::Join("`r`n", $content)
-$script = [System.Convert]::ToBase64String(([System.Text.Encoding]::UTF8.GetBytes($scriptInp)))
-
-#region program frame
-$culture = ""
-
-if ($lcid)
-{
-	$culture = @"
+	
+	$platform = "anycpu"
+	if ($x64 -and !$x86) { $platform = "x64" }
+	else { if ($x86 -and !$x64) { $platform = "x86" } }
+	
+	$cop = (New-Object Microsoft.CSharp.CSharpCodeProvider($o))
+	$cp = New-Object System.CodeDom.Compiler.CompilerParameters($referenceAssembies, $outputFile)
+	$cp.GenerateInMemory = $FALSE
+	$cp.GenerateExecutable = $TRUE
+	
+	$iconFileParam = ""
+	if (!([string]::IsNullOrEmpty($iconFile)))
+	{
+		$iconFileParam = "`"/win32icon:$($iconFile)`""
+	}
+	
+	$reqAdmParam = ""
+	if ($requireAdmin)
+	{
+		$win32manifest = "<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>`r`n<assembly xmlns=""urn:schemas-microsoft-com:asm.v1"" manifestVersion=""1.0"">`r`n<trustInfo xmlns=""urn:schemas-microsoft-com:asm.v2"">`r`n<security>`r`n<requestedPrivileges xmlns=""urn:schemas-microsoft-com:asm.v3"">`r`n<requestedExecutionLevel level=""requireAdministrator"" uiAccess=""false""/>`r`n</requestedPrivileges>`r`n</security>`r`n</trustInfo>`r`n</assembly>"
+		$win32manifest | Set-Content ($outputFile + ".win32manifest") -Encoding UTF8
+		
+		$reqAdmParam = "`"/win32manifest:$($outputFile + ".win32manifest")`""
+	}
+	
+	if (!$virtualize)
+	{ $cp.CompilerOptions = "/platform:$($platform) /target:$(if ($noConsole) { 'winexe' }
+			else { 'exe' }) $($iconFileParam) $($reqAdmParam)" }
+	else
+	{
+		Write-Host "Application virtualization is activated, forcing x86 platfom."
+		$cp.CompilerOptions = "/platform:x86 /target:$(if ($noConsole) { 'winexe' }
+			else { 'exe' }) /nowin32manifest $($iconFileParam)"
+	}
+	
+	$cp.IncludeDebugInformation = $debug
+	
+	if ($debug)
+	{
+		$cp.TempFiles.KeepFiles = $TRUE
+	}
+	
+	Write-Host "Reading input file " -NoNewline
+	Write-Host $inputFile
+	Write-Host ""
+	$content = Get-Content -LiteralPath ($inputFile) -Encoding UTF8 -ErrorAction SilentlyContinue
+	if ($content -eq $null)
+	{
+		Write-Host "No data found. May be read error or file protected."
+		exit -2
+	}
+	$scriptInp = [string]::Join("`r`n", $content)
+	$script = [System.Convert]::ToBase64String(([System.Text.Encoding]::UTF8.GetBytes($scriptInp)))
+	
+	#region program frame
+	$culture = ""
+	
+	if ($lcid)
+	{
+		$culture = @"
 	System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo($lcid);
 	System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo($lcid);
 "@
-}
-
-$programFrame = @"
+	}
+	
+	$programFrame = @"
 // Simple PowerShell host created by Ingo Karstein (http://blog.karstein-consulting.com) for PS2EXE
 // Reworked and GUI support by Markus Scholtes
 
@@ -385,26 +415,28 @@ using System.Management.Automation.Host;
 using System.Security;
 using System.Reflection;
 using System.Runtime.InteropServices;
-$(if ($noConsole) {@"
+$(if ($noConsole) { @"
 using System.Windows.Forms;
 using System.Drawing;
-"@ })
+"@
+		})
 
 [assembly:AssemblyTitle("$title")]
 [assembly:AssemblyProduct("$product")]
 [assembly:AssemblyCopyright("$copyright")]
 [assembly:AssemblyTrademark("$trademark")]
-$(if (![string]::IsNullOrEmpty($version)) {@"
+$(if (![string]::IsNullOrEmpty($version)) { @"
 [assembly:AssemblyVersion("$version")]
 [assembly:AssemblyFileVersion("$version")]
-"@ })
+"@
+		})
 // not displayed in details tab of properties dialog, but embedded to file
 [assembly:AssemblyDescription("$description")]
 [assembly:AssemblyCompany("$company")]
 
 namespace ik.PowerShell
 {
-$(if ($noConsole -or $credentialGUI) {@"
+$(if ($noConsole -or $credentialGUI) { @"
 	internal class CredentialForm
 	{
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -505,15 +537,18 @@ $(if ($noConsole -or $credentialGUI) {@"
 			return null;
 		}
 	}
-"@ })
+"@
+		})
 
 	internal class PS2EXEHostRawUI : PSHostRawUserInterface
 	{
-$(if ($noConsole){ @"
+$(if ($noConsole) { @"
 		// Speicher fÃƒÂ¼r Konsolenfarben bei GUI-Output werden gelesen und gesetzt, aber im Moment nicht genutzt (for future use)
 		private ConsoleColor ncBackgroundColor = ConsoleColor.White;
 		private ConsoleColor ncForegroundColor = ConsoleColor.Black;
-"@ } else {@"
+"@
+		}
+		else { @"
 		const int STD_OUTPUT_HANDLE = -11;
 
 		//CHAR_INFO struct, which was a union in the old days
@@ -584,11 +619,12 @@ $(if ($noConsole){ @"
 
 		[DllImport("kernel32.dll", SetLastError = true)]
 			static extern IntPtr GetStdHandle(int nStdHandle);
-"@ })
+"@
+		})
 
 		public override ConsoleColor BackgroundColor
 		{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 			get
 			{
 				return Console.BackgroundColor;
@@ -597,7 +633,9 @@ $(if (!$noConsole){ @"
 			{
 				Console.BackgroundColor = value;
 			}
-"@ } else {@"
+"@
+		}
+		else { @"
 			get
 			{
 				return ncBackgroundColor;
@@ -606,30 +644,35 @@ $(if (!$noConsole){ @"
 			{
 				ncBackgroundColor = value;
 			}
-"@ })
+"@
+		})
 		}
 
 		public override System.Management.Automation.Host.Size BufferSize
 		{
 			get
 			{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				if (ConsoleInfo.IsOutputRedirected())
 					// return default value for redirection. If no valid value is returned WriteLine will not be called
 					return new System.Management.Automation.Host.Size(120, 50);
 				else
 					return new System.Management.Automation.Host.Size(Console.BufferWidth, Console.BufferHeight);
-"@ } else {@"
+"@
+		}
+		else { @"
 					// return default value for Winforms. If no valid value is returned WriteLine will not be called
 				return new System.Management.Automation.Host.Size(120, 50);
-"@ })
+"@
+		})
 			}
 			set
 			{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				Console.BufferWidth = value.Width;
 				Console.BufferHeight = value.Height;
-"@ })
+"@
+		})
 			}
 		}
 
@@ -637,19 +680,23 @@ $(if (!$noConsole){ @"
 		{
 			get
 			{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				return new Coordinates(Console.CursorLeft, Console.CursorTop);
-"@ } else {@"
+"@
+		}
+		else { @"
 				// Dummywert fÃƒÂ¼r Winforms zurÃƒÂ¼ckgeben.
 				return new Coordinates(0, 0);
-"@ })
+"@
+		})
 			}
 			set
 			{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				Console.CursorTop = value.Y;
 				Console.CursorLeft = value.X;
-"@ })
+"@
+		})
 			}
 		}
 
@@ -657,33 +704,40 @@ $(if (!$noConsole){ @"
 		{
 			get
 			{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				return Console.CursorSize;
-"@ } else {@"
+"@
+		}
+		else { @"
 				// Dummywert fÃƒÂ¼r Winforms zurÃƒÂ¼ckgeben.
 				return 25;
-"@ })
+"@
+		})
 			}
 			set
 			{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				Console.CursorSize = value;
-"@ })
+"@
+		})
 			}
 		}
 
-$(if ($noConsole){ @"
+$(if ($noConsole) { @"
 		private Form InvisibleForm = null;
-"@ })
+"@
+		})
 
 		public override void FlushInputBuffer()
 		{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 			if (!ConsoleInfo.IsInputRedirected())
 			{	while (Console.KeyAvailable)
     			Console.ReadKey(true);
     	}
-"@ } else {@"
+"@
+		}
+		else { @"
 			if (InvisibleForm != null)
 			{
 				InvisibleForm.Close();
@@ -696,12 +750,13 @@ $(if (!$noConsole){ @"
 				InvisibleForm.ShowInTaskbar = false;
 				InvisibleForm.Visible = true;
 			}
-"@ })
+"@
+		})
 		}
 
 		public override ConsoleColor ForegroundColor
 		{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 			get
 			{
 				return Console.ForegroundColor;
@@ -710,7 +765,9 @@ $(if (!$noConsole){ @"
 			{
 				Console.ForegroundColor = value;
 			}
-"@ } else {@"
+"@
+		}
+		else { @"
 			get
 			{
 				return ncForegroundColor;
@@ -719,14 +776,17 @@ $(if (!$noConsole){ @"
 			{
 				ncForegroundColor = value;
 			}
-"@ })
+"@
+		})
 		}
 
 		public override BufferCell[,] GetBufferContents(System.Management.Automation.Host.Rectangle rectangle)
 		{
-$(if ($compiler20) {@"
+$(if ($compiler20) { @"
 			throw new Exception("Method GetBufferContents not implemented for .Net V2.0 compiler");
-"@ } else { if (!$noConsole) {@"
+"@
+		}
+		else { if (!$noConsole) { @"
 			IntPtr hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 			CHAR_INFO[,] buffer = new CHAR_INFO[rectangle.Bottom - rectangle.Top + 1, rectangle.Right - rectangle.Left + 1];
 			COORD buffer_size = new COORD() {X = (short)(rectangle.Right - rectangle.Left + 1), Y = (short)(rectangle.Bottom - rectangle.Top + 1)};
@@ -743,7 +803,9 @@ $(if ($compiler20) {@"
 				}
 
 			return ScreenBuffer;
-"@ } else {@"
+"@
+			}
+			else { @"
 			System.Management.Automation.Host.BufferCell[,] ScreenBuffer = new System.Management.Automation.Host.BufferCell[rectangle.Bottom - rectangle.Top + 1, rectangle.Right - rectangle.Left + 1];
 
 			for (int y = 0; y <= rectangle.Bottom - rectangle.Top; y++)
@@ -753,18 +815,23 @@ $(if ($compiler20) {@"
 				}
 
 			return ScreenBuffer;
-"@ } })
+"@
+			}
+		})
 		}
 
 		public override bool KeyAvailable
 		{
 			get
 			{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 				return Console.KeyAvailable;
-"@ } else {@"
+"@
+		}
+		else { @"
 				return true;
-"@ })
+"@
+		})
 			}
 		}
 
@@ -772,12 +839,15 @@ $(if (!$noConsole) {@"
 		{
 			get
 			{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				return new System.Management.Automation.Host.Size(Console.LargestWindowWidth, Console.LargestWindowHeight);
-"@ } else {@"
+"@
+		}
+		else { @"
 				// Dummy-Wert fÃƒÂ¼r Winforms
 				return new System.Management.Automation.Host.Size(240, 84);
-"@ })
+"@
+		})
 			}
 		}
 
@@ -785,18 +855,21 @@ $(if (!$noConsole){ @"
 		{
 			get
 			{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				return new System.Management.Automation.Host.Size(Console.BufferWidth, Console.BufferWidth);
-"@ } else {@"
+"@
+		}
+		else { @"
 				// Dummy-Wert fÃƒÂ¼r Winforms
 				return new System.Management.Automation.Host.Size(120, 84);
-"@ })
+"@
+		})
 			}
 		}
 
 		public override KeyInfo ReadKey(ReadKeyOptions options)
 		{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			ConsoleKeyInfo cki = Console.ReadKey((options & ReadKeyOptions.NoEcho)!=0);
 
 			ControlKeyStates cks = 0;
@@ -812,19 +885,24 @@ $(if (!$noConsole) {@"
 				cks |= ControlKeyStates.NumLockOn;
 
 			return new KeyInfo((int)cki.Key, cki.KeyChar, cks, (options & ReadKeyOptions.IncludeKeyDown)!=0);
-"@ } else {@"
+"@
+		}
+		else { @"
 			if ((options & ReadKeyOptions.IncludeKeyDown)!=0)
 				return ReadKeyBox.Show("", "", true);
 			else
 				return ReadKeyBox.Show("", "", false);
-"@ })
+"@
+		})
 		}
 
 		public override void ScrollBufferContents(System.Management.Automation.Host.Rectangle source, Coordinates destination, System.Management.Automation.Host.Rectangle clip, BufferCell fill)
 		{ // no destination block clipping implemented
-$(if (!$noConsole) { if ($compiler20) {@"
+$(if (!$noConsole) { if ($compiler20) { @"
 			throw new Exception("Method ScrollBufferContents not implemented for .Net V2.0 compiler");
-"@ } else {@"
+"@
+			}
+			else { @"
 			// clip area out of source range?
 			if ((source.Left > clip.Right) || (source.Right < clip.Left) || (source.Top > clip.Bottom) || (source.Bottom < clip.Top))
 			{ // clipping out of range -> nothing to do
@@ -842,12 +920,14 @@ $(if (!$noConsole) { if ($compiler20) {@"
 			CHAR_INFO lpFill = new CHAR_INFO() { AsciiChar = fill.Character, Attributes = (ushort)((int)(fill.ForegroundColor) + (int)(fill.BackgroundColor)*16) };
 
 			ScrollConsoleScreenBuffer(hStdOut, ref lpScrollRectangle, ref lpClipRectangle, dwDestinationOrigin, ref lpFill);
-"@ } })
+"@
+			}
+		})
 		}
 
 		public override void SetBufferContents(System.Management.Automation.Host.Rectangle rectangle, BufferCell fill)
 		{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 			// using a trick: move the buffer out of the screen, the source area gets filled with the char fill.Character
 			if (rectangle.Left >= 0)
 				Console.MoveBufferArea(rectangle.Left, rectangle.Top, rectangle.Right-rectangle.Left+1, rectangle.Bottom-rectangle.Top+1, BufferSize.Width, BufferSize.Height, fill.Character, fill.ForegroundColor, fill.BackgroundColor);
@@ -855,14 +935,17 @@ $(if (!$noConsole){ @"
 			{ // Clear-Host: move all content off the screen
 				Console.MoveBufferArea(0, 0, BufferSize.Width, BufferSize.Height, BufferSize.Width, BufferSize.Height, fill.Character, fill.ForegroundColor, fill.BackgroundColor);
 			}
-"@ })
+"@
+		})
 		}
 
 		public override void SetBufferContents(Coordinates origin, BufferCell[,] contents)
 		{
-$(if (!$noConsole) { if ($compiler20) {@"
+$(if (!$noConsole) { if ($compiler20) { @"
 			throw new Exception("Method SetBufferContents not implemented for .Net V2.0 compiler");
-"@ } else {@"
+"@
+			}
+			else { @"
 			IntPtr hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 			CHAR_INFO[,] buffer = new CHAR_INFO[contents.GetLength(0), contents.GetLength(1)];
 			COORD buffer_size = new COORD() {X = (short)(contents.GetLength(1)), Y = (short)(contents.GetLength(0))};
@@ -876,7 +959,9 @@ $(if (!$noConsole) { if ($compiler20) {@"
 				}
 
 			WriteConsoleOutput(hStdOut, buffer, buffer_size, buffer_index, ref screen_rect);
-"@ } })
+"@
+			}
+		})
 		}
 
 		public override Coordinates WindowPosition
@@ -884,22 +969,26 @@ $(if (!$noConsole) { if ($compiler20) {@"
 			get
 			{
 				Coordinates s = new Coordinates();
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				s.X = Console.WindowLeft;
 				s.Y = Console.WindowTop;
-"@ } else {@"
+"@
+		}
+		else { @"
 				// Dummy-Wert fÃƒÂ¼r Winforms
 				s.X = 0;
 				s.Y = 0;
-"@ })
+"@
+		})
 				return s;
 			}
 			set
 			{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				Console.WindowLeft = value.X;
 				Console.WindowTop = value.Y;
-"@ })
+"@
+		})
 			}
 		}
 
@@ -908,22 +997,26 @@ $(if (!$noConsole){ @"
 			get
 			{
 				System.Management.Automation.Host.Size s = new System.Management.Automation.Host.Size();
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				s.Height = Console.WindowHeight;
 				s.Width = Console.WindowWidth;
-"@ } else {@"
+"@
+		}
+		else { @"
 				// Dummy-Wert fÃƒÂ¼r Winforms
 				s.Height = 50;
 				s.Width = 120;
-"@ })
+"@
+		})
 				return s;
 			}
 			set
 			{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				Console.WindowWidth = value.Width;
 				Console.WindowHeight = value.Height;
-"@ })
+"@
+		})
 			}
 		}
 
@@ -931,22 +1024,26 @@ $(if (!$noConsole){ @"
 		{
 			get
 			{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				return Console.Title;
-"@ } else {@"
+"@
+		}
+		else { @"
 				return System.AppDomain.CurrentDomain.FriendlyName;
-"@ })
+"@
+		})
 			}
 			set
 			{
-$(if (!$noConsole){ @"
+$(if (!$noConsole) { @"
 				Console.Title = value;
-"@ })
+"@
+		})
 			}
 		}
 	}
 
-$(if ($noConsole){ @"
+$(if ($noConsole) { @"
 	public class InputBox
 	{
 		[DllImport("user32.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
@@ -1396,7 +1493,8 @@ $(if ($noConsole){ @"
 			Application.DoEvents();
 		}
 	}
-"@})
+"@
+		})
 
 	// define IsInputRedirected(), IsOutputRedirected() and IsErrorRedirected() here since they were introduced first with .Net 4.5
 	public class ConsoleInfo
@@ -1468,28 +1566,34 @@ $(if ($noConsole){ @"
 		public ConsoleColor VerboseForegroundColor = ConsoleColor.Yellow;
 		public ConsoleColor VerboseBackgroundColor = ConsoleColor.Black;
 
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 		public ConsoleColor ProgressForegroundColor = ConsoleColor.Yellow;
-"@ } else {@"
+"@
+		}
+		else { @"
 		public ConsoleColor ProgressForegroundColor = ConsoleColor.DarkCyan;
-"@ })
+"@
+		})
 		public ConsoleColor ProgressBackgroundColor = ConsoleColor.DarkCyan;
 
 		public PS2EXEHostUI() : base()
 		{
 			rawUI = new PS2EXEHostRawUI();
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			rawUI.ForegroundColor = Console.ForegroundColor;
 			rawUI.BackgroundColor = Console.BackgroundColor;
-"@ })
+"@
+		})
 		}
 
 		public override Dictionary<string, PSObject> Prompt(string caption, string message, System.Collections.ObjectModel.Collection<FieldDescription> descriptions)
 		{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			if (!string.IsNullOrEmpty(caption)) WriteLine(caption);
 			if (!string.IsNullOrEmpty(message)) WriteLine(message);
-"@ } else {@"
+"@
+		}
+		else { @"
 			if ((!string.IsNullOrEmpty(caption)) || (!string.IsNullOrEmpty(message)))
 			{ string sTitel = System.AppDomain.CurrentDomain.FriendlyName, sMeldung = "";
 
@@ -1501,7 +1605,8 @@ $(if (!$noConsole) {@"
 			// Titel und Labeltext fÃƒÂ¼r Inputbox zurÃƒÂ¼cksetzen
 			ibcaption = "";
 			ibmessage = "";
-"@ })
+"@
+		})
 			Dictionary<string, PSObject> ret = new Dictionary<string, PSObject>();
 			foreach (FieldDescription cd in descriptions)
 			{
@@ -1525,11 +1630,14 @@ $(if (!$noConsole) {@"
 					{
 						try
 						{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 							if (!string.IsNullOrEmpty(cd.Name)) Write(string.Format("{0}[{1}]: ", cd.Name, index));
-"@ } else {@"
+"@
+		}
+		else { @"
 							if (!string.IsNullOrEmpty(cd.Name)) ibmessage = string.Format("{0}[{1}]: ", cd.Name, index);
-"@ })
+"@
+		})
 							data = ReadLine();
 							if (string.IsNullOrEmpty(data))
 								break;
@@ -1557,14 +1665,17 @@ $(if (!$noConsole) {@"
 						{
 							if (t != typeof(System.Management.Automation.PSCredential))
 							{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 								if (!string.IsNullOrEmpty(cd.Name)) Write(cd.Name);
 								if (!string.IsNullOrEmpty(cd.HelpMessage)) Write(" (Type !? for help.)");
 								if ((!string.IsNullOrEmpty(cd.Name)) || (!string.IsNullOrEmpty(cd.HelpMessage))) Write(": ");
-"@ } else {@"
+"@
+		}
+		else { @"
 								if (!string.IsNullOrEmpty(cd.Name)) ibmessage = string.Format("{0}: ", cd.Name);
 								if (!string.IsNullOrEmpty(cd.HelpMessage)) ibmessage += "\n(Type !? for help.)";
-"@ })
+"@
+		})
 								do {
 									l = ReadLine();
 									if (l == "!?")
@@ -1593,11 +1704,14 @@ $(if (!$noConsole) {@"
 						}
 						else
 						{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 								if (!string.IsNullOrEmpty(cd.Name)) Write(string.Format("{0}: ", cd.Name));
-"@ } else {@"
+"@
+		}
+		else { @"
 								if (!string.IsNullOrEmpty(cd.Name)) ibmessage = string.Format("{0}: ", cd.Name);
-"@ })
+"@
+		})
 
 							SecureString pwd = null;
 							pwd = ReadLineAsSecureString();
@@ -1612,21 +1726,24 @@ $(if (!$noConsole) {@"
 					}
 				}
 			}
-$(if ($noConsole) {@"
+$(if ($noConsole) { @"
 			// Titel und Labeltext fÃƒÂ¼r Inputbox zurÃƒÂ¼cksetzen
 			ibcaption = "";
 			ibmessage = "";
-"@ })
+"@
+		})
 			return ret;
 		}
 
 		public override int PromptForChoice(string caption, string message, System.Collections.ObjectModel.Collection<ChoiceDescription> choices, int defaultChoice)
 		{
-$(if ($noConsole) {@"
+$(if ($noConsole) { @"
 			int iReturn = ChoiceBox.Show(choices, defaultChoice, caption, message);
 			if (iReturn == -1) { iReturn = defaultChoice; }
 			return iReturn;
-"@ } else {@"
+"@
+		}
+		else { @"
 			if (!string.IsNullOrEmpty(caption))
 				WriteLine(caption);
 			WriteLine(message);
@@ -1676,12 +1793,13 @@ $(if ($noConsole) {@"
 			catch { }
 
 			return defaultChoice;
-"@ })
+"@
+		})
 		}
 
 		public override PSCredential PromptForCredential(string caption, string message, string userName, string targetName, PSCredentialTypes allowedCredentialTypes, PSCredentialUIOptions options)
 		{
-$(if (!$noConsole -and !$credentialGUI) {@"
+$(if (!$noConsole -and !$credentialGUI) { @"
 			if (!string.IsNullOrEmpty(caption)) WriteLine(caption);
 			WriteLine(message);
 
@@ -1711,7 +1829,9 @@ $(if (!$noConsole -and !$credentialGUI) {@"
 
 			PSCredential c2 = new PSCredential(un, pwd);
 			return c2;
-"@ } else {@"
+"@
+		}
+		else { @"
 			ik.PowerShell.CredentialForm.UserPwd cred = CredentialForm.PromptForPassword(caption, message, targetName, userName, allowedCredentialTypes, options);
 			if (cred != null)
 			{
@@ -1722,12 +1842,13 @@ $(if (!$noConsole -and !$credentialGUI) {@"
 				return new PSCredential(cred.User, x);
 			}
 			return null;
-"@ })
+"@
+		})
 		}
 
 		public override PSCredential PromptForCredential(string caption, string message, string userName, string targetName)
 		{
-$(if (!$noConsole -and !$credentialGUI) {@"
+$(if (!$noConsole -and !$credentialGUI) { @"
 			if (!string.IsNullOrEmpty(caption)) WriteLine(caption);
 			WriteLine(message);
 
@@ -1757,7 +1878,9 @@ $(if (!$noConsole -and !$credentialGUI) {@"
 
 			PSCredential c2 = new PSCredential(un, pwd);
 			return c2;
-"@ } else {@"
+"@
+		}
+		else { @"
 			ik.PowerShell.CredentialForm.UserPwd cred = CredentialForm.PromptForPassword(caption, message, targetName, userName, PSCredentialTypes.Default, PSCredentialUIOptions.Default);
 			if (cred != null)
 			{
@@ -1768,7 +1891,8 @@ $(if (!$noConsole -and !$credentialGUI) {@"
 				return new PSCredential(cred.User, x);
 			}
 			return null;
-"@ })
+"@
+		})
 		}
 
 		public override PSHostRawUserInterface RawUI
@@ -1779,22 +1903,26 @@ $(if (!$noConsole -and !$credentialGUI) {@"
 			}
 		}
 
-$(if ($noConsole) {@"
+$(if ($noConsole) { @"
 		private string ibcaption;
 		private string ibmessage;
-"@ })
+"@
+		})
 
 		public override string ReadLine()
 		{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			return Console.ReadLine();
-"@ } else {@"
+"@
+		}
+		else { @"
 			string sWert = "";
 			if (InputBox.Show(ibcaption, ibmessage, ref sWert) == DialogResult.OK)
 				return sWert;
 			else
 				return "";
-"@ })
+"@
+		})
 		}
 
 		private System.Security.SecureString getPassword()
@@ -1828,9 +1956,11 @@ $(if (!$noConsole) {@"
 		public override System.Security.SecureString ReadLineAsSecureString()
 		{
 			System.Security.SecureString secstr = new System.Security.SecureString();
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			secstr = getPassword();
-"@ } else {@"
+"@
+		}
+		else { @"
 			string sWert = "";
 
 			if (InputBox.Show(ibcaption, ibmessage, ref sWert, true) == DialogResult.OK)
@@ -1838,100 +1968,123 @@ $(if (!$noConsole) {@"
 				foreach (char ch in sWert)
 					secstr.AppendChar(ch);
 			}
-"@ })
+"@
+		})
 			return secstr;
 		}
 
 		// called by Write-Host
 		public override void Write(ConsoleColor foregroundColor, ConsoleColor backgroundColor, string value)
 		{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			ConsoleColor fgc = Console.ForegroundColor, bgc = Console.BackgroundColor;
 			Console.ForegroundColor = foregroundColor;
 			Console.BackgroundColor = backgroundColor;
 			Console.Write(value);
 			Console.ForegroundColor = fgc;
 			Console.BackgroundColor = bgc;
-"@ } else {@"
+"@
+		}
+		else { @"
 			if ((!string.IsNullOrEmpty(value)) && (value != "\n"))
 				MessageBox.Show(value, System.AppDomain.CurrentDomain.FriendlyName);
-"@ })
+"@
+		})
 		}
 
 		public override void Write(string value)
 		{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			Console.Write(value);
-"@ } else {@"
+"@
+		}
+		else { @"
 			if ((!string.IsNullOrEmpty(value)) && (value != "\n"))
 				MessageBox.Show(value, System.AppDomain.CurrentDomain.FriendlyName);
-"@ })
+"@
+		})
 		}
 
 		// called by Write-Debug
 		public override void WriteDebugLine(string message)
 		{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			WriteLine(DebugForegroundColor, DebugBackgroundColor, string.Format("DEBUG: {0}", message));
-"@ } else {@"
+"@
+		}
+		else { @"
 			MessageBox.Show(message, System.AppDomain.CurrentDomain.FriendlyName, MessageBoxButtons.OK, MessageBoxIcon.Information);
-"@ })
+"@
+		})
 		}
 
 		// called by Write-Error
 		public override void WriteErrorLine(string value)
 		{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			if (ConsoleInfo.IsErrorRedirected())
 				Console.Error.WriteLine(string.Format("ERROR: {0}", value));
 			else
 				WriteLine(ErrorForegroundColor, ErrorBackgroundColor, string.Format("ERROR: {0}", value));
-"@ } else {@"
+"@
+		}
+		else { @"
 			MessageBox.Show(value, System.AppDomain.CurrentDomain.FriendlyName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-"@ })
+"@
+		})
 		}
 
 		public override void WriteLine()
 		{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			Console.WriteLine();
-"@ } else {@"
+"@
+		}
+		else { @"
 			MessageBox.Show("", System.AppDomain.CurrentDomain.FriendlyName);
-"@ })
+"@
+		})
 		}
 
 		public override void WriteLine(ConsoleColor foregroundColor, ConsoleColor backgroundColor, string value)
 		{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			ConsoleColor fgc = Console.ForegroundColor, bgc = Console.BackgroundColor;
 			Console.ForegroundColor = foregroundColor;
 			Console.BackgroundColor = backgroundColor;
 			Console.WriteLine(value);
 			Console.ForegroundColor = fgc;
 			Console.BackgroundColor = bgc;
-"@ } else {@"
+"@
+		}
+		else { @"
 			if ((!string.IsNullOrEmpty(value)) && (value != "\n"))
 				MessageBox.Show(value, System.AppDomain.CurrentDomain.FriendlyName);
-"@ })
+"@
+		})
 		}
 
 		// called by Write-Output
 		public override void WriteLine(string value)
 		{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			Console.WriteLine(value);
-"@ } else {@"
+"@
+		}
+		else { @"
 			if ((!string.IsNullOrEmpty(value)) && (value != "\n"))
 				MessageBox.Show(value, System.AppDomain.CurrentDomain.FriendlyName);
-"@ })
+"@
+		})
 		}
 
-$(if ($noConsole) {@"
+$(if ($noConsole) { @"
 		public ProgressForm pf = null;
-"@ })
+"@
+		})
 		public override void WriteProgress(long sourceId, ProgressRecord record)
 		{
-$(if ($noConsole) {@"
+$(if ($noConsole) { @"
 			if (pf == null)
 			{
 				pf = new ProgressForm(ProgressForegroundColor);
@@ -1942,27 +2095,34 @@ $(if ($noConsole) {@"
 			{
 				pf = null;
 			}
-"@ })
+"@
+		})
 		}
 
 		// called by Write-Verbose
 		public override void WriteVerboseLine(string message)
 		{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			WriteLine(VerboseForegroundColor, VerboseBackgroundColor, string.Format("VERBOSE: {0}", message));
-"@ } else {@"
+"@
+		}
+		else { @"
 			MessageBox.Show(message, System.AppDomain.CurrentDomain.FriendlyName, MessageBoxButtons.OK, MessageBoxIcon.Information);
-"@ })
+"@
+		})
 		}
 
 		// called by Write-Warning
 		public override void WriteWarningLine(string message)
 		{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 			WriteLine(WarningForegroundColor, WarningBackgroundColor, string.Format("WARNING: {0}", message));
-"@ } else {@"
+"@
+		}
+		else { @"
 			MessageBox.Show(message, System.AppDomain.CurrentDomain.FriendlyName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-"@ })
+"@
+		})
 		}
 	}
 
@@ -2182,7 +2342,7 @@ $(if (!$noConsole) {@"
 			set { this.exitCode = value; }
 		}
 
-		$(if ($Sta){"[STAThread]"})$(if ($Mta){"[MTAThread]"})
+		$(if ($Sta) { "[STAThread]" })$(if ($Mta) { "[MTAThread]" })
 		private static int Main(string[] args)
 		{
 			$culture
@@ -2202,12 +2362,12 @@ $(if (!$noConsole) {@"
 			{
 				using (Runspace myRunSpace = RunspaceFactory.CreateRunspace(host))
 				{
-					$(if ($Sta -or $Mta) {"myRunSpace.ApartmentState = System.Threading.ApartmentState."})$(if ($Sta){"STA"})$(if ($Mta){"MTA"});
+					$(if ($Sta -or $Mta) { "myRunSpace.ApartmentState = System.Threading.ApartmentState." })$(if ($Sta) { "STA" })$(if ($Mta) { "MTA" });
 					myRunSpace.Open();
 
 					using (System.Management.Automation.PowerShell powershell = System.Management.Automation.PowerShell.Create())
 					{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 						Console.CancelKeyPress += new ConsoleCancelEventHandler(delegate(object sender, ConsoleCancelEventArgs e)
 						{
 							try
@@ -2222,7 +2382,8 @@ $(if (!$noConsole) {@"
 							{
 							};
 						});
-"@ })
+"@
+		})
 
 						powershell.Runspace = myRunSpace;
 						powershell.Streams.Error.DataAdded += new EventHandler<DataAddedEventArgs>(delegate(object sender, DataAddedEventArgs e)
@@ -2231,7 +2392,7 @@ $(if (!$noConsole) {@"
 						});
 
 						PSDataCollection<string> colInput = new PSDataCollection<string>();
-$(if (!$runtime20) {@"
+$(if (!$runtime20) { @"
 						if (ConsoleInfo.IsInputRedirected())
 						{ // read standard input
 							string sItem = "";
@@ -2240,7 +2401,8 @@ $(if (!$runtime20) {@"
 								colInput.Add(sItem);
 							}
 						}
-"@ })
+"@
+		})
 						colInput.Complete();
 
 						PSDataCollection<PSObject> colOutput = new PSDataCollection<PSObject>();
@@ -2260,11 +2422,14 @@ $(if (!$runtime20) {@"
 								string[] s1 = s.Split(new string[] { ":" }, 2, StringSplitOptions.RemoveEmptyEntries);
 								if (s1.Length != 2)
 								{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 									Console.WriteLine("If you specify the -extract option you need to add a file for extraction in this way\r\n   -extract:\"<filename>\"");
-"@ } else {@"
+"@
+		}
+		else { @"
 									MessageBox.Show("If you specify the -extract option you need to add a file for extraction in this way\r\n   -extract:\"<filename>\"", System.AppDomain.CurrentDomain.FriendlyName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-"@ })
+"@
+		})
 									return 1;
 								}
 								extractFN = s1[1].Trim(new char[] { '\"' });
@@ -2370,22 +2535,28 @@ $(if (!$noConsole) {@"
 			}
 			catch (Exception ex)
 			{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 				Console.Write("An exception occured: ");
 				Console.WriteLine(ex.Message);
-"@ } else {@"
+"@
+		}
+		else { @"
 				MessageBox.Show("An exception occured: " + ex.Message, System.AppDomain.CurrentDomain.FriendlyName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-"@ })
+"@
+		})
 			}
 
 			if (paramWait)
 			{
-$(if (!$noConsole) {@"
+$(if (!$noConsole) { @"
 				Console.WriteLine("Hit any key to exit...");
 				Console.ReadKey();
-"@ } else {@"
+"@
+		}
+		else { @"
 				MessageBox.Show("Click OK to exit...", System.AppDomain.CurrentDomain.FriendlyName);
-"@ })
+"@
+		})
 			}
 			return me.ExitCode;
 		}
@@ -2397,276 +2568,318 @@ $(if (!$noConsole) {@"
 	}
 }
 "@
-#endregion
-
-$configFileForEXE2 = "<?xml version=""1.0"" encoding=""utf-8"" ?>`r`n<configuration><startup><supportedRuntime version=""v2.0.50727""/></startup></configuration>"
-$configFileForEXE3 = "<?xml version=""1.0"" encoding=""utf-8"" ?>`r`n<configuration><startup><supportedRuntime version=""v4.0"" sku="".NETFramework,Version=v4.0"" /></startup></configuration>"
-
-Write-Host "Compiling file... " -NoNewline
-$cr = $cop.CompileAssemblyFromSource($cp, $programFrame)
-if ($cr.Errors.Count -gt 0)
-{
-	Write-Host ""
-	Write-Host ""
-	if (Test-Path $outputFile)
+	#endregion
+	
+	$configFileForEXE2 = "<?xml version=""1.0"" encoding=""utf-8"" ?>`r`n<configuration><startup><supportedRuntime version=""v2.0.50727""/></startup></configuration>"
+	$configFileForEXE3 = "<?xml version=""1.0"" encoding=""utf-8"" ?>`r`n<configuration><startup><supportedRuntime version=""v4.0"" sku="".NETFramework,Version=v4.0"" /></startup></configuration>"
+	
+	Write-Host "Compiling file... " -NoNewline
+	$cr = $cop.CompileAssemblyFromSource($cp, $programFrame)
+	if ($cr.Errors.Count -gt 0)
 	{
-		Remove-Item $outputFile -Verbose:$FALSE
-	}
-	Write-Host -ForegroundColor red "Could not create the PowerShell .exe file because of compilation errors. Use -verbose parameter to see details."
-	$cr.Errors | % { Write-Verbose $_ -Verbose:$verbose}
-}
-else
-{
-	Write-Host ""
-	Write-Host ""
-	if (Test-Path $outputFile)
-	{
-		Write-Host "Output file " -NoNewline
-		Write-Host $outputFile -NoNewline
-		Write-Host " written"
-
-		if ($debug)
+		Write-Host ""
+		Write-Host ""
+		if (Test-Path $outputFile)
 		{
-			$cr.TempFiles | ? { $_ -ilike "*.cs" } | select -first 1 | % {
-				$dstSrc = ([System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($outputFile), [System.IO.Path]::GetFileNameWithoutExtension($outputFile)+".cs"))
-				Write-Host "Source file name for debug copied: $($dstSrc)"
-				Copy-Item -Path $_ -Destination $dstSrc -Force
-			}
-			$cr.TempFiles | Remove-Item -Verbose:$FALSE -Force -ErrorAction SilentlyContinue
+			Remove-Item $outputFile -Verbose:$FALSE
 		}
-		if (!$noConfigfile)
-		{
-			if ($runtime20)
-			{
-				$configFileForEXE2 | Set-Content ($outputFile+".config") -Encoding UTF8
-				Write-Host "Config file for EXE created."
-			}
-			if ($runtime40)
-			{
-				$configFileForEXE3 | Set-Content ($outputFile+".config") -Encoding UTF8
-				Write-Host "Config file for EXE created."
-			}
-		}
+		Write-Host -ForegroundColor red "Could not create the PowerShell .exe file because of compilation errors. Use -verbose parameter to see details."
+		$cr.Errors | % { Write-Verbose $_ -Verbose:$verbose }
 	}
 	else
 	{
-		Write-Host "Output file " -NoNewline -ForegroundColor Red
-		Write-Host $outputFile -ForegroundColor Red -NoNewline
-		Write-Host " not written" -ForegroundColor Red
+		Write-Host ""
+		Write-Host ""
+		if (Test-Path $outputFile)
+		{
+			Write-Host "Output file " -NoNewline
+			Write-Host $outputFile -NoNewline
+			Write-Host " written"
+			
+			if ($debug)
+			{
+				$cr.TempFiles | ? { $_ -ilike "*.cs" } | select -first 1 | % {
+					$dstSrc = ([System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($outputFile), [System.IO.Path]::GetFileNameWithoutExtension($outputFile) + ".cs"))
+					Write-Host "Source file name for debug copied: $($dstSrc)"
+					Copy-Item -Path $_ -Destination $dstSrc -Force
+				}
+				$cr.TempFiles | Remove-Item -Verbose:$FALSE -Force -ErrorAction SilentlyContinue
+			}
+			if (!$noConfigfile)
+			{
+				if ($runtime20)
+				{
+					$configFileForEXE2 | Set-Content ($outputFile + ".config") -Encoding UTF8
+					Write-Host "Config file for EXE created."
+				}
+				if ($runtime40)
+				{
+					$configFileForEXE3 | Set-Content ($outputFile + ".config") -Encoding UTF8
+					Write-Host "Config file for EXE created."
+				}
+			}
+		}
+		else
+		{
+			Write-Host "Output file " -NoNewline -ForegroundColor Red
+			Write-Host $outputFile -ForegroundColor Red -NoNewline
+			Write-Host " not written" -ForegroundColor Red
+		}
 	}
-}
-
-if ($requireAdmin)
-{ if (Test-Path $($outputFile+".win32manifest"))
+	
+	if ($requireAdmin)
 	{
-		Remove-Item $($outputFile+".win32manifest") -Verbose:$FALSE
+		if (Test-Path $($outputFile + ".win32manifest"))
+		{
+			Remove-Item $($outputFile + ".win32manifest") -Verbose:$FALSE
+		}
 	}
-}
 }
 
 #Grabs MSI details
 #Source: http://www.scconfigmgr.com/2014/08/22/how-to-get-msi-file-information-with-powershell/
-function getMSIData {
-param(
-    [parameter(Mandatory=$true)]
-    [ValidateNotNullOrEmpty()]
-    [System.IO.FileInfo]$Path,
- 
-    [parameter(Mandatory=$true)]
-    [ValidateNotNullOrEmpty()]
-    [ValidateSet("ProductCode", "ProductVersion", "ProductName", "Manufacturer", "ProductLanguage", "FullVersion")]
-    [string]$Property
-)
-Process {
-    try {
-        # Read property from MSI database
-        $WindowsInstaller = New-Object -ComObject WindowsInstaller.Installer
-        $MSIDatabase = $WindowsInstaller.GetType().InvokeMember("OpenDatabase", "InvokeMethod", $null, $WindowsInstaller, @($Path.FullName, 0))
-        $Query = "SELECT Value FROM Property WHERE Property = '$($Property)'"
-        $View = $MSIDatabase.GetType().InvokeMember("OpenView", "InvokeMethod", $null, $MSIDatabase, ($Query))
-        $View.GetType().InvokeMember("Execute", "InvokeMethod", $null, $View, $null)
-        $Record = $View.GetType().InvokeMember("Fetch", "InvokeMethod", $null, $View, $null)
-        $Value = $Record.GetType().InvokeMember("StringData", "GetProperty", $null, $Record, 1)
- 
-        # Commit database and close view
-        $MSIDatabase.GetType().InvokeMember("Commit", "InvokeMethod", $null, $MSIDatabase, $null)
-        $View.GetType().InvokeMember("Close", "InvokeMethod", $null, $View, $null)           
-        $MSIDatabase = $null
-        $View = $null
- 
-        # Return the value
-        return $Value
-    } 
-    catch {
-        Write-Host -ForegroundColor Red "Uh oh... your selected file broke me :(" ; break
-    }
-}
-End {
-    # Run garbage collection and release ComObject
-    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($WindowsInstaller) | Out-Null
-    [System.GC]::Collect()
-}
+function getMSIData
+{
+	param (
+		[parameter(Mandatory = $true)]
+		[ValidateNotNullOrEmpty()]
+		[System.IO.FileInfo]$Path,
+		[parameter(Mandatory = $true)]
+		[ValidateNotNullOrEmpty()]
+		[ValidateSet("ProductCode", "ProductVersion", "ProductName", "Manufacturer", "ProductLanguage", "FullVersion")]
+		[string]$Property
+	)
+	Process
+	{
+		try
+		{
+			# Read property from MSI database
+			$WindowsInstaller = New-Object -ComObject WindowsInstaller.Installer
+			$MSIDatabase = $WindowsInstaller.GetType().InvokeMember("OpenDatabase", "InvokeMethod", $null, $WindowsInstaller, @($Path.FullName, 0))
+			$Query = "SELECT Value FROM Property WHERE Property = '$($Property)'"
+			$View = $MSIDatabase.GetType().InvokeMember("OpenView", "InvokeMethod", $null, $MSIDatabase, ($Query))
+			$View.GetType().InvokeMember("Execute", "InvokeMethod", $null, $View, $null)
+			$Record = $View.GetType().InvokeMember("Fetch", "InvokeMethod", $null, $View, $null)
+			$Value = $Record.GetType().InvokeMember("StringData", "GetProperty", $null, $Record, 1)
+			
+			# Commit database and close view
+			$MSIDatabase.GetType().InvokeMember("Commit", "InvokeMethod", $null, $MSIDatabase, $null)
+			$View.GetType().InvokeMember("Close", "InvokeMethod", $null, $View, $null)
+			$MSIDatabase = $null
+			$View = $null
+			
+			# Return the value
+			return $Value
+		}
+		catch
+		{
+			Write-Host -ForegroundColor Red "Uh oh... your selected file broke me :("; break
+		}
+	}
+	End
+	{
+		# Run garbage collection and release ComObject
+		[System.Runtime.Interopservices.Marshal]::ReleaseComObject($WindowsInstaller) | Out-Null
+		[System.GC]::Collect()
+	}
 }
 
 #Generates install/uninstall scripts based on 
-function generateScript {
-    param(
-    [Parameter(Mandatory=$true)]$switches,
-    [Parameter(Mandatory=$true)]$installationFileLocation,
-    [Parameter(Mandatory=$false)]$productCode,
-	[Parameter(Mandatory=$false)]$desktopIconName,
-	[Parameter(Mandatory=$false)]$startMenuShortcut,
-	[Parameter(Mandatory=$false)]$copyOverFile,
-	[Parameter(Mandatory=$false)]$copyIntoDirectory,
-	[Parameter(Mandatory=$false)]$extraCode
-    )
-
+function generateScript
+{
+	param (
+		[Parameter(Mandatory = $true)]
+		$switches,
+		[Parameter(Mandatory = $true)]
+		$installationFileLocation,
+		[Parameter(Mandatory = $false)]
+		$productCode,
+		[Parameter(Mandatory = $false)]
+		$desktopIconName,
+		[Parameter(Mandatory = $false)]
+		$startMenuShortcut,
+		[Parameter(Mandatory = $false)]
+		$copyOverFile,
+		[Parameter(Mandatory = $false)]
+		$copyIntoDirectory,
+		[Parameter(Mandatory = $false)]
+		$extraCode
+	)
+	
 	#If generation is complete
 	$complete = "false"
+	
+	#Get the current date
+	$currentDate = Get-Date -DisplayHint Date
+	
+	#Set the file name without the extension
+	$installationFileName = [IO.Path]::GetFileNameWithoutExtension($installationFileLocation)
+	
+	#Set the file name with the extension
+	$installationFile = Split-Path $installationFileLocation -Leaf
+	
+    #Set the parent directory of the installation file
+    $parentInstallationFile = Split-Path $installationFileLocation -Parent
 
-    #Get the current date
-    $currentDate = Get-Date -DisplayHint Date
-
-    #Set the file name without the extension
-    $installationFileName = [IO.Path]::GetFileNameWithoutExtension($installationFileLocation)
-
-    #Set the file name with the extension
-    $installationFile = Split-Path $installationFileLocation -Leaf
-
-    if ($installationFileLocation -match '.msi' -and $complete -match 'false') {
-
+	if ($installationFileLocation -match '.msi' -and $complete -match 'false')
+	{
+		
 		Write-Host -ForegroundColor Green "Generating Scripts..."
-    	#Create installation script
-        New-Item -Name $("install_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
-        "`n#Date Created " + $currentDate + "
+		#Create installation script
+		New-Item -Path $parentInstallationFile -Name $("install_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
+			"`n#Date Created " + $currentDate + "
         `n#Silently installs " + $installationFileName + "`nStart-Process" + ' "$PSScriptRoot\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
-
-        if ($productCode -ne "") {
-            #Create uninstallation script
-            New-Item -Name $("uninstall_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently uninstalls " + $installationFileName + 
-            "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
-            "`n#Date Created " + $currentDate + "
+		
+		if ($productCode -ne "")
+		{
+			#Create uninstallation script
+			New-Item -Path $parentInstallationFile -Name $("uninstall_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently uninstalls " + $installationFileName +
+				"`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
+				"`n#Date Created " + $currentDate + "
             `n#Silently uninstalls " + $installationFileName + "`nStart-Process " + '"msiexec.exe"' + " -Wait -ArgumentList " + '"/qn /x' + $productCode + '"') -Force | Out-Null
-        }
-
-        #Create temporary test directory
-		if (!(Test-Path ".\_TEST_YOUR_APPLICATION")) {
-            New-Item -ItemType Directory ".\_TEST_YOUR_APPLICATION" -Force
 		}
-
-        #Create Test Script
-        New-Item -Path $(".\_TEST_YOUR_APPLICATION\") -Name $("test_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
-        "`n#Date Created " + $currentDate + "`n`n" +'Write-Host -ForegroundColor Green "Starting your installation..."' + "`n"  + "
-        `n#Silently installs " + $installationFileName + "`n" + '$parent = Get-Location | Split-Path -Parent' + "`nStart-Process" + ' "$parent\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
-            
-        #Copy shortcut onto Desktop
-        if ($desktopIconName -ne "UserInputNull") {
-
-            #Add to install script
-            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
-
-            #Add to test script
-            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
-        }
-
-        #Copy file/folder into directory
-        if ($copyOverFile -ne "UserInputNull" -and $copyIntoDirectory -ne "UserInputNull") {
-
-            #Add to install script
-            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
-
-            #Add to test script
-            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
-        }
-
-		#Add extra code
-        if ($extraCode -ne "UserInputNull") {     
-        
-            #Add to install script
-            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCode) -Force | Out-Null
-
-            #Add to test script
-            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCode) -Force | Out-Null
-        }
-
-		#Add to end of test script
-		Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n" + 'Write-Host -ForegroundColor Green "Done!"' +"`n" + 'Start-Sleep -s 5')
-
-        #Compile Test Scripts
-        PS2EXE $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") $(".\_TEST_YOUR_APPLICATION\_TEST_RUN_AS_ADMIN_" + $installationFileName + ".exe") | Out-Null
-
-		$complete = "true"
-        Write-Host -ForegroundColor Green "`nSuccess!"
-        }
-
-    if ($installationFileLocation -match '.exe' -and $complete -match 'false') {
-
-		Write-Host -ForegroundColor Green "Generating Scripts..."
-        #Create installation script
-        New-Item -Name $(".\install_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
-        "`n#Date Created " + $currentDate + "
-        `n#Silently installs " + $installationFileName + "`nStart-Process" + ' "$PSScriptRoot\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
-
-        #Create temporary test directory
-		if (!(Test-Path ".\_TEST_YOUR_APPLICATION")) {
-            New-Item -ItemType Directory ".\_TEST_YOUR_APPLICATION" -Force
+		
+		#Create temporary test directory
+		if (!(Test-Path $($parentInstallationFile + "\_TEST_YOUR_APPLICATION")))
+		{
+			New-Item -ItemType Directory $($parentInstallationFile + "\_TEST_YOUR_APPLICATION") -Force
 		}
-
-        #Create Test Script
-        New-Item -Path $(".\_TEST_YOUR_APPLICATION\") -Name $("test_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
-        "`n#Date Created " + $currentDate + "`n`n" +'Write-Host -ForegroundColor Green "Starting your installation..."' + "`n"  + "
+		
+		#Create Test Script
+		New-Item -Path $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\") -Name $("test_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
+			"`n#Date Created " + $currentDate + "`n`n" + 'Write-Host -ForegroundColor Green "Starting your installation..."' + "`n" + "
         `n#Silently installs " + $installationFileName + "`n" + '$parent = Get-Location | Split-Path -Parent' + "`nStart-Process" + ' "$parent\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
-
-        #Copy over shortcut into Start Menu
-        if ($startMenuShortcut -ne "UserInputNull") {     
-        
-            #Add to install script
-            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n`n#Copies a shortcut into the start menu" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $startMenuShortcut + '" "' + '$env:ProgramData\Microsoft\Windows\Start Menu\Programs' + '" -Force') -Force | Out-Null
-
-            #Add to test script
-            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n`n#Copies a shortcut into the start menu" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $startMenuShortcut + '" "' + '$env:ProgramData\Microsoft\Windows\Start Menu\Programs' + '" -Force') -Force | Out-Null
-        }
-
-        #Copy shortcut onto Desktop
-        if ($desktopIconName -ne "UserInputNull") {
-
-            #Add to install script
-            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n`#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
-
-            #Add to test script
-            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "'+ '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
-        }
-
-        #Copy file/folder into directory
-        if ($copyOverFile -ne "UserInputNull" -and $copyIntoDirectory -ne "UserInputNull") {
-
-            #Add to install script
-            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
-
-            #Add to test script
-            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
-        }
-
-		#Add extra code
-        if ($extraCode -ne "UserInputNull") {     
-        
-            #Add to install script
-            Add-Content $(".\install_" + $installationFileName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCode) -Force | Out-Null
-
-            #Add to test script
-            Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCode) -Force | Out-Null
-        }
-
-		#Add to end of test script
-		Add-Content $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n" + 'Write-Host -ForegroundColor Green "Done!"' +"`n" + 'Start-Sleep -s 5')
-
-        #Compile Test Scripts
-        PS2EXE $(".\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") $(".\_TEST_YOUR_APPLICATION\_TEST_RUN_AS_ADMIN_" + $installationFileName + ".exe") | Out-Null
+		
+		#Copy shortcut onto Desktop
+		if ($desktopIconName -ne "UserInputNull")
+		{
 			
+			#Add to install script
+			Add-Content $($parentInstallationFile + "\install_" + $installationFileName + ".ps1") -Value $("`n`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
+			
+			#Add to test script
+			Add-Content $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
+		}
+		
+		#Copy file/folder into directory
+		if ($copyOverFile -ne "UserInputNull" -and $copyIntoDirectory -ne "UserInputNull")
+		{
+			
+			#Add to install script
+			Add-Content $($parentInstallationFile + "\install_" + $installationFileName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
+			
+			#Add to test script
+			Add-Content $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
+		}
+		
+		#Add extra code
+		if ($extraCode -ne "UserInputNull")
+		{
+			
+			#Add to install script
+			Add-Content $($parentInstallationFile + "\install_" + $installationFileName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCode) -Force | Out-Null
+			
+			#Add to test script
+			Add-Content $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCode) -Force | Out-Null
+		}
+		
+		#Add to end of test script
+		Add-Content $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n" + 'Write-Host -ForegroundColor Green "Done!"' + "`n" + 'Start-Sleep -s 5')
+		
+		#Compile Test Scripts
+		PS2EXE $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\_TEST_RUN_AS_ADMIN_" + $installationFileName + ".exe") | Out-Null
+		
 		$complete = "true"
-        Write-Host -ForegroundColor Green "`nSuccess!"
-        }
-    }
+		Write-Host -ForegroundColor Green "`nSuccess!"
+	}
+	
+	if ($installationFileLocation -match '.exe' -and $complete -match 'false')
+	{
+		
+		Write-Host -ForegroundColor Green "Generating Scripts..."
+		#Create installation script
+		New-Item -Path $parentInstallationFile  -Name $("\install_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
+			"`n#Date Created " + $currentDate + "
+        `n#Silently installs " + $installationFileName + "`nStart-Process" + ' "$PSScriptRoot\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
+		
+		#Create temporary test directory
+		if (!(Test-Path $($parentInstallationFile + "\_TEST_YOUR_APPLICATION")))
+		{
+			New-Item -ItemType Directory $($parentInstallationFile + "\_TEST_YOUR_APPLICATION") -Force
+		}
+		
+		#Create Test Script
+		New-Item -Path $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\") -Name $("test_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
+			"`n#Date Created " + $currentDate + "`n`n" + 'Write-Host -ForegroundColor Green "Starting your installation..."' + "`n" + "
+        `n#Silently installs " + $installationFileName + "`n" + '$parent = Get-Location | Split-Path -Parent' + "`nStart-Process" + ' "$parent\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
+		
+		#Copy over shortcut into Start Menu
+		if ($startMenuShortcut -ne "UserInputNull")
+		{
+			
+			#Add to install script
+			Add-Content $($parentInstallationFile + "\install_" + $installationFileName + ".ps1") -Value $("`n`n#Copies a shortcut into the start menu" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $startMenuShortcut + '" "' + '$env:ProgramData\Microsoft\Windows\Start Menu\Programs' + '" -Force') -Force | Out-Null
+			
+			#Add to test script
+			Add-Content $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n`n#Copies a shortcut into the start menu" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $startMenuShortcut + '" "' + '$env:ProgramData\Microsoft\Windows\Start Menu\Programs' + '" -Force') -Force | Out-Null
+		}
+		
+		#Copy shortcut onto Desktop
+		if ($desktopIconName -ne "UserInputNull")
+		{
+			
+			#Add to install script
+			Add-Content $($parentInstallationFile + "\install_" + $installationFileName + ".ps1") -Value $("`n`#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
+			
+			#Add to test script
+			Add-Content $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Copies a shortcut onto the public desktop" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $desktopIconName + '" "' + '$env:PUBLIC\Desktop' + '" -Force') -Force | Out-Null
+		}
+		
+		#Copy file/folder into directory
+		if ($copyOverFile -ne "UserInputNull" -and $copyIntoDirectory -ne "UserInputNull")
+		{
+			
+			#Add to install script
+			Add-Content $($parentInstallationFile + "\install_" + $installationFileName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
+			
+			#Add to test script
+			Add-Content $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Copies a file/folder into a folder" + "`n" + 'Copy-Item "' + '$PSScriptRoot' + '\' + $copyOverFile + '" ' + '"' + $copyIntoDirectory + '" -Force') -Force | Out-Null
+		}
+		
+		#Add extra code
+		if ($extraCode -ne "UserInputNull")
+		{
+			
+			#Add to install script
+			Add-Content $($parentInstallationFile + "\install_" + $installationFileName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCode) -Force | Out-Null
+			
+			#Add to test script
+			Add-Content $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n#Added code" + "`n" + $extraCode) -Force | Out-Null
+		}
+		
+		#Add to end of test script
+		Add-Content $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") -Value $("`n" + 'Write-Host -ForegroundColor Green "Done!"' + "`n" + 'Start-Sleep -s 5')
+		
+		#Compile Test Scripts
+		PS2EXE $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\" + "test_" + $installationFileName + ".ps1") $($parentInstallationFile + "\_TEST_YOUR_APPLICATION\_TEST_RUN_AS_ADMIN_" + $installationFileName + ".exe") | Out-Null
+		
+		$complete = "true"
+		Write-Host -ForegroundColor Green "`nSuccess!"
+	}
+}
+
+#Reference: https://blogs.technet.microsoft.com/heyscriptingguy/2009/09/01/hey-scripting-guy-can-i-open-a-file-dialog-box-with-windows-powershell/
+Function Get-FileName($initialDirectory)
+{
+	[System.Reflection.Assembly]::LoadWithPartialName("System.windows.forms") |
+	Out-Null
+	
+	$OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+	$OpenFileDialog.initialDirectory = $initialDirectory
+	$OpenFileDialog.filter = "Executable Files (*.exe, *.msi)| *.exe;*.msi"
+	$OpenFileDialog.ShowDialog() | Out-Null
+	$OpenFileDialog.filename
+}
 
 #XAML Input
 $inputXML = @"
@@ -2692,7 +2905,7 @@ $inputXML = @"
         <TextBlock x:Name="IntroText" HorizontalAlignment="Left" Margin="14,10,0,0" TextWrapping="Wrap" Text="Script Generator " VerticalAlignment="Top" Height="22" Width="507" Foreground="White" Grid.Column="3" FontFamily="Segoe UI Black"/>
         <Label x:Name="InstallationFile_Label" Content="Select your installation file:" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Foreground="White" Grid.Column="3" Height="31" Width="211" FontFamily="Segoe UI Semibold"/>
         <Label x:Name="Switch_Label" Content="Enter your installation switches:" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Foreground="White" Grid.Column="3" Height="31" Width="247" FontFamily="Segoe UI Semibold"/>
-        <ComboBox x:Name="InstallationFile_ComboBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Margin="285,45,0,0" VerticalAlignment="Top" Width="250"/>
+        <TextBox x:Name="InstallationFile_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="285,45,0,0" VerticalAlignment="Top" Width="164" Background="#FFE5E5E5" IsReadOnly="True"/>
         <TextBox x:Name="Switches" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="285,75,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5"/>
 
         <CheckBox x:Name="StartMenu_CheckBox" Grid.ColumnSpan="4" Content="Add Start Menu shortcut?" HorizontalAlignment="Left" Margin="14,120,0,0" VerticalAlignment="Top" FontWeight="Bold" FontFamily="Segoe UI Semibold" Background="White" Foreground="White"/>
@@ -2704,7 +2917,7 @@ $inputXML = @"
         <Label x:Name="Desktop_Label" Grid.ColumnSpan="4" Content="Shortcut Filename (including extension):" HorizontalAlignment="Left" Margin="32,195,0,0" VerticalAlignment="Top" Width="253" Foreground="White" FontSize="14" Visibility="Hidden"/>
         <Label x:Name="Copy_Label" Grid.ColumnSpan="4" Content="File/Folder Path:" HorizontalAlignment="Left" Margin="32,250,0,0" VerticalAlignment="Top" Width="253" Foreground="White" FontSize="14" Visibility="Hidden"/>
         <Label x:Name="CopyDestination_Label" Grid.ColumnSpan="4" Content="Destination Path:" HorizontalAlignment="Left" Margin="32,280,0,0" VerticalAlignment="Top" Width="253" Foreground="White" FontSize="14" Visibility="Hidden"/>
-        <Label x:Name="ExtraCode_Label" Grid.ColumnSpan="4" Content="Insert other code (use Enter to disguish different lines):" HorizontalAlignment="Left" Margin="120,329,0,0" VerticalAlignment="Top" Width="329" Foreground="White" FontSize="14" Visibility="Hidden"/>
+        <Label x:Name="ExtraCode_Label" Grid.ColumnSpan="4" Content="Insert other code (use Enter to separate lines):" HorizontalAlignment="Left" Margin="120,329,0,0" VerticalAlignment="Top" Width="329" Foreground="White" FontSize="14" Visibility="Hidden"/>
 
         <TextBox x:Name="StartMenuShortcut_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="285,143,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5" Visibility="Hidden"/>
         <TextBox x:Name="DesktopShortcut_TextBox" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="27" Margin="285,198,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="250" Background="#FFE5E5E5" Visibility="Hidden"/>
@@ -2715,91 +2928,104 @@ $inputXML = @"
         <Button x:Name="Generate_Button" Content="Generate" Grid.Column="3" HorizontalAlignment="Left" Margin="1,109.009,0,0" VerticalAlignment="Top" Width="568" Height="38.5" Background="White" FontWeight="Bold" IsEnabled="False" Grid.Row="1"/>
         <Border BorderBrush="Black" BorderThickness="3" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="115" VerticalAlignment="Top" Width="568" Margin="1,0,0,0"/>
         <Border BorderBrush="Black" BorderThickness="3,0,3,3" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="387" VerticalAlignment="Top" Width="568" Margin="1,110,0,0" Grid.RowSpan="2"/>
+        <Button x:Name="Browse_Button" Content="Browse" Grid.ColumnSpan="4" HorizontalAlignment="Left" VerticalAlignment="Top" Height="27" Width="85" Margin="450,45,0,0" BorderBrush="#FFABADB3" Background="#FFE5E5E5"/>
     </Grid>
 </Window>
 
-"@ 
- 
-$inputXML = $inputXML -replace 'mc:Ignorable="d"','' -replace "x:N",'N' -replace '^<Win.*', '<Window'
+"@
+
+$inputXML = $inputXML -replace 'mc:Ignorable="d"', '' -replace "x:N", 'N' -replace '^<Win.*', '<Window'
 [void][System.Reflection.Assembly]::LoadWithPartialName('presentationframework')
 [xml]$XAML = $inputXML
 #Read XAML
- 
-$reader=(New-Object System.Xml.XmlNodeReader $xaml)
-try{
-    $Form=[Windows.Markup.XamlReader]::Load( $reader )
+
+$reader = (New-Object System.Xml.XmlNodeReader $xaml)
+try
+{
+	$Form = [Windows.Markup.XamlReader]::Load($reader)
 }
-catch{
-    Write-Warning "Unable to parse XML, with error: $($Error[0])`n Ensure that there are NO SelectionChanged or TextChanged properties in your textboxes (PowerShell cannot process them)"
-    throw
+catch
+{
+	Write-Warning "Unable to parse XML, with error: $($Error[0])`n Ensure that there are NO SelectionChanged or TextChanged properties in your textboxes (PowerShell cannot process them)"
+	throw
 }
- 
+
 
 # Load XAML Objects In PowerShell 
-$xaml.SelectNodes("//*[@Name]") | %{"trying item $($_.Name)";
-    try {Set-Variable -Name "WPF$($_.Name)" -Value $Form.FindName($_.Name) -ErrorAction Stop}
-    catch{throw}
-    } | Out-Null
+$xaml.SelectNodes("//*[@Name]") | %{
+	"trying item $($_.Name)";
+	try { Set-Variable -Name "WPF$($_.Name)" -Value $Form.FindName($_.Name) -ErrorAction Stop }
+	catch { throw }
+} | Out-Null
 
 #Add code to GUI
-
 #If the user doesn't select an installation file
-$WPFInstallationFile_ComboBox.Add_DropDownClosed({if ($WPFInstallationFile_ComboBox.SelectedValue -ne $null) {$WPFGenerate_Button.IsEnabled = $true} else {$WPFGenerate_Button.IsEnabled = $false}}) 
-
-#Populate Installation File ComboBox                                                                
-$InstallationFileList = Get-ChildItem .\* -Include *.exe, *.msi -Exclude "ScriptGenerator.exe" | Select-Object -ExpandProperty Name
-$InstallationFileList | ForEach-Object {$WPFInstallationFile_ComboBox.AddChild($_)}
+$WPFBrowse_Button.Add_Click({ 
+$WPFInstallationFile_TextBox.Text = Get-FileName -initialDirectory $env:USERNAME\Desktop
+$WPFGenerate_Button.IsEnabled = $true
+})
+#$WPFBrowse_Button.Add_Click({ if ($WPFInstallationFile_TextBox.Text -ne $null) { $WPFGenerate_Button.IsEnabled = $true }
+#		else { $WPFGenerate_Button.IsEnabled = $false } })
 
 #Handle Start Menu Shortcut CheckBox interactions
-$WPFStartMenu_CheckBox.Add_Checked({if ($WPFStartMenu_Label.Visibility -ne 'Visible'){$WPFStartMenu_Label.Visibility, $WPFStartMenuShortcut_TextBox.Visibility = 'Visible','Visible'}})
-$WPFStartMenu_CheckBox.Add_UnChecked({if ($WPFStartMenu_Label.Visibility -eq 'Visible'){$WPFStartMenu_Label.Visibility, $WPFStartMenuShortcut_TextBox.Visibility = 'Hidden','Hidden'}})
+$WPFStartMenu_CheckBox.Add_Checked({ if ($WPFStartMenu_Label.Visibility -ne 'Visible') { $WPFStartMenu_Label.Visibility, $WPFStartMenuShortcut_TextBox.Visibility = 'Visible', 'Visible' } })
+$WPFStartMenu_CheckBox.Add_UnChecked({ if ($WPFStartMenu_Label.Visibility -eq 'Visible') { $WPFStartMenu_Label.Visibility, $WPFStartMenuShortcut_TextBox.Visibility = 'Hidden', 'Hidden' } })
 
 #Handle Desktop Shortcut CheckBox interactions
-$WPFDesktop_CheckBox.Add_Checked({if ($WPFDesktop_Label.Visibility -ne 'Visible'){$WPFDesktop_Label.Visibility, $WPFDesktopShortcut_TextBox.Visibility = 'Visible','Visible'}})
-$WPFDesktop_CheckBox.Add_UnChecked({if ($WPFDesktop_Label.Visibility -eq 'Visible'){$WPFDesktop_Label.Visibility, $WPFDesktopShortcut_TextBox.Visibility = 'Hidden','Hidden'}})
+$WPFDesktop_CheckBox.Add_Checked({ if ($WPFDesktop_Label.Visibility -ne 'Visible') { $WPFDesktop_Label.Visibility, $WPFDesktopShortcut_TextBox.Visibility = 'Visible', 'Visible' } })
+$WPFDesktop_CheckBox.Add_UnChecked({ if ($WPFDesktop_Label.Visibility -eq 'Visible') { $WPFDesktop_Label.Visibility, $WPFDesktopShortcut_TextBox.Visibility = 'Hidden', 'Hidden' } })
 
 #Handle Copy File CheckBox interactions
-$WPFCopy_CheckBox.Add_Checked({if ($WPFCopy_Label.Visibility -ne 'Visible'){
-    $WPFCopy_Label.Visibility = 'Visible'
-    $WPFCopy_TextBox.Visibility = 'Visible'
-    $WPFCopyDestination_Label.Visibility = 'Visible'
-    $WPFCopyDestination_TextBox.Visibility = 'Visible'
-}})
-$WPFCopy_CheckBox.Add_UnChecked({if ($WPFCopy_Label.Visibility -eq 'Visible'){
-    $WPFCopy_Label.Visibility = 'Hidden'
-    $WPFCopy_TextBox.Visibility = 'Hidden'
-    $WPFCopyDestination_Label.Visibility = 'Hidden'
-    $WPFCopyDestination_TextBox.Visibility = 'Hidden'
-}})
+$WPFCopy_CheckBox.Add_Checked({
+		if ($WPFCopy_Label.Visibility -ne 'Visible')
+		{
+			$WPFCopy_Label.Visibility = 'Visible'
+			$WPFCopy_TextBox.Visibility = 'Visible'
+			$WPFCopyDestination_Label.Visibility = 'Visible'
+			$WPFCopyDestination_TextBox.Visibility = 'Visible'
+		}
+	})
+$WPFCopy_CheckBox.Add_UnChecked({
+		if ($WPFCopy_Label.Visibility -eq 'Visible')
+		{
+			$WPFCopy_Label.Visibility = 'Hidden'
+			$WPFCopy_TextBox.Visibility = 'Hidden'
+			$WPFCopyDestination_Label.Visibility = 'Hidden'
+			$WPFCopyDestination_TextBox.Visibility = 'Hidden'
+		}
+	})
 
 #Handle Extra Code CheckBox interactions
-$WPFExtraCode_CheckBox.Add_Checked({if ($WPFExtraCode_Label.Visibility -ne 'Visible'){$WPFExtraCode_Label.Visibility, $WPFExtraCode_TextBox.Visibility = 'Visible','Visible'}})
-$WPFExtraCode_CheckBox.Add_UnChecked({if ($WPFExtraCode_Label.Visibility -eq 'Visible'){$WPFExtraCode_Label.Visibility, $WPFExtraCode_TextBox.Visibility = 'Hidden','Hidden'}})
+$WPFExtraCode_CheckBox.Add_Checked({ if ($WPFExtraCode_Label.Visibility -ne 'Visible') { $WPFExtraCode_Label.Visibility, $WPFExtraCode_TextBox.Visibility = 'Visible', 'Visible' } })
+$WPFExtraCode_CheckBox.Add_UnChecked({ if ($WPFExtraCode_Label.Visibility -eq 'Visible') { $WPFExtraCode_Label.Visibility, $WPFExtraCode_TextBox.Visibility = 'Hidden', 'Hidden' } })
+
+
 
 #Handle Generation Button
 $WPFGenerate_Button.Add_Click({
-if ($WPFStartMenu_CheckBox.IsChecked -eq $false) {$WPFStartMenuShortcut_TextBox.Text = "UserInputNull"}
-if ($WPFDesktop_CheckBox.IsChecked -eq $false) {$WPFDesktopShortcut_TextBox.Text = "UserInputNull"}
-if ($WPFCopy_CheckBox.IsChecked -eq $false) {
-$WPFCopyDestination_TextBox.Text = "UserInputNull"
-$WPFCopy_TextBox.Text = "UserInputNull"
-}
-if ($WPFExtraCode_CheckBox.IsChecked -eq $false) {$WPFExtraCode_TextBox.Text = "UserInputNull"}
+		if ($WPFStartMenu_CheckBox.IsChecked -eq $false) { $WPFStartMenuShortcut_TextBox.Text = "UserInputNull" }
+		if ($WPFDesktop_CheckBox.IsChecked -eq $false) { $WPFDesktopShortcut_TextBox.Text = "UserInputNull" }
+		if ($WPFCopy_CheckBox.IsChecked -eq $false)
+		{
+			$WPFCopyDestination_TextBox.Text = "UserInputNull"
+			$WPFCopy_TextBox.Text = "UserInputNull"
+		}
+		if ($WPFExtraCode_CheckBox.IsChecked -eq $false) { $WPFExtraCode_TextBox.Text = "UserInputNull" }
+		
+		#Gather MSI productCode
+		if ($WPFInstallationFile_TextBox.Text -match '.msi') { $productCode = getMSIData -Path $WPFInstallationFile_TextBox.Text -Property ProductCode }
+		
+		#Generate Script
+		generateScript -Switches $WPFSwitches.Text -installationFileLocation $WPFInstallationFile_TextBox.Text -productCode $productCode -desktopIconName $WPFDesktopShortcut_TextBox.Text -startMenuShortcut $WPFStartMenuShortcut_TextBox.Text -copyOverFile $WPFCopy_TextBox.Text -copyIntoDirectory $WPFCopyDestination_TextBox.Text -extraCode $WPFExtraCode_TextBox.Text
+		
+		#Close form
+		$Form.Close()
+	})
 
-#Gather MSI productCode
-if ($WPFInstallationFile_ComboBox.Text -match '.msi') {$productCode = getMSIData -Path $WPFInstallationFile_ComboBox.Text -Property ProductCode}
-
-#Generate Script
-generateScript -Switches $WPFSwitches.Text -installationFileLocation $WPFInstallationFile_ComboBox.Text -productCode $productCode -desktopIconName $WPFDesktopShortcut_TextBox.Text -startMenuShortcut $WPFStartMenuShortcut_TextBox.Text -copyOverFile $WPFCopy_TextBox.Text -copyIntoDirectory $WPFCopyDestination_TextBox.Text -extraCode $WPFExtraCode_TextBox.Text
-
-#Close form
-$Form.Close()
-})
- 
 
 #Show form
 $Form.ShowDialog() | Out-Null
-
+#Developed by Austin Webber, UWRF
 
 
 
