@@ -1,8 +1,6 @@
-# script-generator
-Silent Installation Script Generator (PowerShell)
+# PS Development Tool
+PowerShell Development Tool (PowerShell)
 
-Usage:
-1. Run the .exe
-2. Browse to installation file and follow steps
-3. After generation, test your script by running the .exe in the folder created
-4. Delete extra files
+Silent Installation Script Generator Usage:
+1. Enter Application Name, select Installation file, enter installation switches, and add additional code or add-ons.
+2. Click "Generate"
