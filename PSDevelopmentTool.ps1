@@ -1,20 +1,86 @@
-#------------------------------------------------------------------------
+﻿#------------------------------------------------------------------------
 # Source File Information (DO NOT MODIFY)
 # Source ID: ecb83ee8-cc17-4a7c-a343-755633c88642
-# Source File: C:\Users\Admin\Documents\SAPIEN\PowerShell Studio\Projects\PS Development Tool\PS Development Tool.psf
+# Source File: ..\..\SAPIEN\PowerShell Studio\Projects\PS Development Tool\PS Development Tool.psf
 #------------------------------------------------------------------------
+#region File Recovery Data (DO NOT MODIFY)
+<#RecoveryData:
+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#>
+#endregion
 
 <#
     .NOTES
     --------------------------------------------------------------------------------
      Code generated by:  SAPIEN Technologies, Inc., PowerShell Studio 2019 v5.6.159
-     Generated on:       2/26/2019 8:25 PM
+     Generated on:       3/21/2019 7:27 PM
      Generated by:       Admin
     --------------------------------------------------------------------------------
     .DESCRIPTION
         GUI script generated by PowerShell Studio 2019
 #>
 
+
+#----------------------------------------------
+#region Application Functions
+#----------------------------------------------
+
+#endregion Application Functions
 
 #----------------------------------------------
 # Generated Form Function
@@ -24,8 +90,8 @@ function Show-PS_Development_Tool_psf {
 	#----------------------------------------------
 	#region Import the Assemblies
 	#----------------------------------------------
-	[void][reflection.assembly]::Load('System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a')
 	[void][reflection.assembly]::Load('System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089')
+	[void][reflection.assembly]::Load('System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a')
 	#endregion Import Assemblies
 
 	#----------------------------------------------
@@ -33,16 +99,8 @@ function Show-PS_Development_Tool_psf {
 	#----------------------------------------------
 	[System.Windows.Forms.Application]::EnableVisualStyles()
 	$formPSDevelopmentTool = New-Object 'System.Windows.Forms.Form'
-	$progressbar1 = New-Object 'System.Windows.Forms.ProgressBar'
-	$buttonWrkstnDev08 = New-Object 'System.Windows.Forms.Button'
-	$buttonWrkstnDev07 = New-Object 'System.Windows.Forms.Button'
-	$buttonWrkstnDev05 = New-Object 'System.Windows.Forms.Button'
-	$buttonWrkstnDev04 = New-Object 'System.Windows.Forms.Button'
-	$buttonWrkstnDev03 = New-Object 'System.Windows.Forms.Button'
-	$buttonWrkstnDev02 = New-Object 'System.Windows.Forms.Button'
-	$buttonAustinsDevVM = New-Object 'System.Windows.Forms.Button'
-	$buttonWrkstnDev01 = New-Object 'System.Windows.Forms.Button'
 	$labelDevelopmentResources = New-Object 'System.Windows.Forms.Label'
+	$progressbar1 = New-Object 'System.Windows.Forms.ProgressBar'
 	$labelLaunchDevelopmentVMs = New-Object 'System.Windows.Forms.Label'
 	$buttonLaunchPowerShellAdmi = New-Object 'System.Windows.Forms.Button'
 	$buttonCMsource = New-Object 'System.Windows.Forms.Button'
@@ -76,6 +134,17 @@ function Show-PS_Development_Tool_psf {
 	$AddOns = New-Object 'System.Windows.Forms.TabPage'
 	$checkboxGenerateSwitchTester = New-Object 'System.Windows.Forms.CheckBox'
 	$checkboxGenerateTestScript = New-Object 'System.Windows.Forms.CheckBox'
+	$tabpage1 = New-Object 'System.Windows.Forms.TabPage'
+	$groupbox1 = New-Object 'System.Windows.Forms.GroupBox'
+	$groupbox2 = New-Object 'System.Windows.Forms.GroupBox'
+	$buttonAustinsDevVM = New-Object 'System.Windows.Forms.Button'
+	$buttonWrkstnDev01 = New-Object 'System.Windows.Forms.Button'
+	$buttonWrkstnDev08 = New-Object 'System.Windows.Forms.Button'
+	$buttonWrkstnDev02 = New-Object 'System.Windows.Forms.Button'
+	$buttonWrkstnDev07 = New-Object 'System.Windows.Forms.Button'
+	$buttonWrkstnDev03 = New-Object 'System.Windows.Forms.Button'
+	$buttonWrkstnDev05 = New-Object 'System.Windows.Forms.Button'
+	$buttonWrkstnDev04 = New-Object 'System.Windows.Forms.Button'
 	$tooltip1 = New-Object 'System.Windows.Forms.ToolTip'
 	$openfiledialog1 = New-Object 'System.Windows.Forms.OpenFileDialog'
 	$InitialFormWindowState = New-Object 'System.Windows.Forms.FormWindowState'
@@ -448,13 +517,13 @@ function Show-PS_Development_Tool_psf {
 		if (!$virtualize)
 		{
 			$cp.CompilerOptions = "/platform:$($platform) /target:$(if ($noConsole) { 'winexe' }
-				else { 'exe' }) $($iconFileParam) $($reqAdmParam)"
+			else { 'exe' }) $($iconFileParam) $($reqAdmParam)"
 		}
 		else
 		{
 			Write-Host "Application virtualization is activated, forcing x86 platfom."
 			$cp.CompilerOptions = "/platform:x86 /target:$(if ($noConsole) { 'winexe' }
-				else { 'exe' }) /nowin32manifest $($iconFileParam)"
+			else { 'exe' }) /nowin32manifest $($iconFileParam)"
 		}
 		
 		$cp.IncludeDebugInformation = $debug
@@ -502,18 +571,18 @@ using System.Management.Automation.Host;
 using System.Security;
 using System.Reflection;
 using System.Runtime.InteropServices;
-	$(if ($noConsole)
-			{
-				@"
+$(if ($noConsole)
+		{
+			@"
 using System.Windows.Forms;
 using System.Drawing;
 "@
 			})
-
-[assembly:AssemblyTitle("$title")]
-[assembly:AssemblyProduct("$product")]
-[assembly:AssemblyCopyright("$copyright")]
-[assembly:AssemblyTrademark("$trademark")]
+	
+	[assembly:AssemblyTitle("$title")]
+	[assembly:AssemblyProduct("$product")]
+	[assembly:AssemblyCopyright("$copyright")]
+	[assembly:AssemblyTrademark("$trademark")]
 	$(if (![string]::IsNullOrEmpty($version))
 			{
 				@"
@@ -521,12 +590,12 @@ using System.Drawing;
 [assembly:AssemblyFileVersion("$version")]
 "@
 			})
-// not displayed in details tab of properties dialog, but embedded to file
-[assembly:AssemblyDescription("$description")]
-[assembly:AssemblyCompany("$company")]
-
-namespace ik.PowerShell
-{
+	// not displayed in details tab of properties dialog, but embedded to file
+	[assembly:AssemblyDescription("$description")]
+	[assembly:AssemblyCompany("$company")]
+	
+	namespace ik.PowerShell
+	{
 	$(if ($noConsole -or $credentialGUI)
 			{
 				@"
@@ -632,9 +701,9 @@ namespace ik.PowerShell
 	}
 "@
 			})
-
-	internal class PS2EXEHostRawUI : PSHostRawUserInterface
-	{
+	
+		internal class PS2EXEHostRawUI : PSHostRawUserInterface
+		{
 	$(if ($noConsole)
 			{
 				@"
@@ -718,9 +787,9 @@ namespace ik.PowerShell
 			static extern IntPtr GetStdHandle(int nStdHandle);
 "@
 			})
-
-		public override ConsoleColor BackgroundColor
-		{
+	
+			public override ConsoleColor BackgroundColor
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -747,12 +816,12 @@ namespace ik.PowerShell
 			}
 "@
 			})
-		}
-
-		public override System.Management.Automation.Host.Size BufferSize
-		{
-			get
+			}
+	
+			public override System.Management.Automation.Host.Size BufferSize
 			{
+				get
+				{
 	$(if (!$noConsole)
 			{
 				@"
@@ -770,9 +839,9 @@ namespace ik.PowerShell
 				return new System.Management.Automation.Host.Size(120, 50);
 "@
 			})
-			}
-			set
-			{
+				}
+				set
+				{
 	$(if (!$noConsole)
 			{
 				@"
@@ -780,13 +849,13 @@ namespace ik.PowerShell
 				Console.BufferHeight = value.Height;
 "@
 			})
+				}
 			}
-		}
-
-		public override Coordinates CursorPosition
-		{
-			get
+	
+			public override Coordinates CursorPosition
 			{
+				get
+				{
 	$(if (!$noConsole)
 			{
 				@"
@@ -800,9 +869,9 @@ namespace ik.PowerShell
 				return new Coordinates(0, 0);
 "@
 			})
-			}
-			set
-			{
+				}
+				set
+				{
 	$(if (!$noConsole)
 			{
 				@"
@@ -810,13 +879,13 @@ namespace ik.PowerShell
 				Console.CursorLeft = value.X;
 "@
 			})
+				}
 			}
-		}
-
-		public override int CursorSize
-		{
-			get
+	
+			public override int CursorSize
 			{
+				get
+				{
 	$(if (!$noConsole)
 			{
 				@"
@@ -830,27 +899,27 @@ namespace ik.PowerShell
 				return 25;
 "@
 			})
-			}
-			set
-			{
+				}
+				set
+				{
 	$(if (!$noConsole)
 			{
 				@"
 				Console.CursorSize = value;
 "@
 			})
+				}
 			}
-		}
-
+	
 	$(if ($noConsole)
 			{
 				@"
 		private Form InvisibleForm = null;
 "@
 			})
-
-		public override void FlushInputBuffer()
-		{
+	
+			public override void FlushInputBuffer()
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -877,10 +946,10 @@ namespace ik.PowerShell
 			}
 "@
 			})
-		}
-
-		public override ConsoleColor ForegroundColor
-		{
+			}
+	
+			public override ConsoleColor ForegroundColor
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -907,10 +976,10 @@ namespace ik.PowerShell
 			}
 "@
 			})
-		}
-
-		public override BufferCell[,] GetBufferContents(System.Management.Automation.Host.Rectangle rectangle)
-		{
+			}
+	
+			public override BufferCell[,] GetBufferContents(System.Management.Automation.Host.Rectangle rectangle)
+			{
 	$(if ($compiler20)
 			{
 				@"
@@ -955,12 +1024,12 @@ namespace ik.PowerShell
 "@
 				}
 			})
-		}
-
-		public override bool KeyAvailable
-		{
-			get
+			}
+	
+			public override bool KeyAvailable
 			{
+				get
+				{
 	$(if (!$noConsole)
 			{
 				@"
@@ -973,13 +1042,13 @@ namespace ik.PowerShell
 				return true;
 "@
 			})
+				}
 			}
-		}
-
-		public override System.Management.Automation.Host.Size MaxPhysicalWindowSize
-		{
-			get
+	
+			public override System.Management.Automation.Host.Size MaxPhysicalWindowSize
 			{
+				get
+				{
 	$(if (!$noConsole)
 			{
 				@"
@@ -993,13 +1062,13 @@ namespace ik.PowerShell
 				return new System.Management.Automation.Host.Size(240, 84);
 "@
 			})
+				}
 			}
-		}
-
-		public override System.Management.Automation.Host.Size MaxWindowSize
-		{
-			get
+	
+			public override System.Management.Automation.Host.Size MaxWindowSize
 			{
+				get
+				{
 	$(if (!$noConsole)
 			{
 				@"
@@ -1013,11 +1082,11 @@ namespace ik.PowerShell
 				return new System.Management.Automation.Host.Size(120, 84);
 "@
 			})
+				}
 			}
-		}
-
-		public override KeyInfo ReadKey(ReadKeyOptions options)
-		{
+	
+			public override KeyInfo ReadKey(ReadKeyOptions options)
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -1047,10 +1116,10 @@ namespace ik.PowerShell
 				return ReadKeyBox.Show("", "", false);
 "@
 			})
-		}
-
-		public override void ScrollBufferContents(System.Management.Automation.Host.Rectangle source, Coordinates destination, System.Management.Automation.Host.Rectangle clip, BufferCell fill)
-		{ // no destination block clipping implemented
+			}
+	
+			public override void ScrollBufferContents(System.Management.Automation.Host.Rectangle source, Coordinates destination, System.Management.Automation.Host.Rectangle clip, BufferCell fill)
+			{ // no destination block clipping implemented
 	$(if (!$noConsole)
 			{
 				if ($compiler20)
@@ -1082,10 +1151,10 @@ namespace ik.PowerShell
 "@
 				}
 			})
-		}
-
-		public override void SetBufferContents(System.Management.Automation.Host.Rectangle rectangle, BufferCell fill)
-		{
+			}
+	
+			public override void SetBufferContents(System.Management.Automation.Host.Rectangle rectangle, BufferCell fill)
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -1098,10 +1167,10 @@ namespace ik.PowerShell
 			}
 "@
 			})
-		}
-
-		public override void SetBufferContents(Coordinates origin, BufferCell[,] contents)
-		{
+			}
+	
+			public override void SetBufferContents(Coordinates origin, BufferCell[,] contents)
+			{
 	$(if (!$noConsole)
 			{
 				if ($compiler20)
@@ -1129,13 +1198,13 @@ namespace ik.PowerShell
 "@
 				}
 			})
-		}
-
-		public override Coordinates WindowPosition
-		{
-			get
+			}
+	
+			public override Coordinates WindowPosition
 			{
-				Coordinates s = new Coordinates();
+				get
+				{
+					Coordinates s = new Coordinates();
 	$(if (!$noConsole)
 			{
 				@"
@@ -1151,10 +1220,10 @@ namespace ik.PowerShell
 				s.Y = 0;
 "@
 			})
-				return s;
-			}
-			set
-			{
+					return s;
+				}
+				set
+				{
 	$(if (!$noConsole)
 			{
 				@"
@@ -1162,14 +1231,14 @@ namespace ik.PowerShell
 				Console.WindowTop = value.Y;
 "@
 			})
+				}
 			}
-		}
-
-		public override System.Management.Automation.Host.Size WindowSize
-		{
-			get
+	
+			public override System.Management.Automation.Host.Size WindowSize
 			{
-				System.Management.Automation.Host.Size s = new System.Management.Automation.Host.Size();
+				get
+				{
+					System.Management.Automation.Host.Size s = new System.Management.Automation.Host.Size();
 	$(if (!$noConsole)
 			{
 				@"
@@ -1185,10 +1254,10 @@ namespace ik.PowerShell
 				s.Width = 120;
 "@
 			})
-				return s;
-			}
-			set
-			{
+					return s;
+				}
+				set
+				{
 	$(if (!$noConsole)
 			{
 				@"
@@ -1196,13 +1265,13 @@ namespace ik.PowerShell
 				Console.WindowHeight = value.Height;
 "@
 			})
+				}
 			}
-		}
-
-		public override string WindowTitle
-		{
-			get
+	
+			public override string WindowTitle
 			{
+				get
+				{
 	$(if (!$noConsole)
 			{
 				@"
@@ -1215,19 +1284,19 @@ namespace ik.PowerShell
 				return System.AppDomain.CurrentDomain.FriendlyName;
 "@
 			})
-			}
-			set
-			{
+				}
+				set
+				{
 	$(if (!$noConsole)
 			{
 				@"
 				Console.Title = value;
 "@
 			})
+				}
 			}
 		}
-	}
-
+	
 	$(if ($noConsole)
 			{
 				@"
@@ -1682,77 +1751,77 @@ namespace ik.PowerShell
 	}
 "@
 			})
-
-	// define IsInputRedirected(), IsOutputRedirected() and IsErrorRedirected() here since they were introduced first with .Net 4.5
-	public class ConsoleInfo
-	{
-		private enum FileType : uint
+	
+		// define IsInputRedirected(), IsOutputRedirected() and IsErrorRedirected() here since they were introduced first with .Net 4.5
+		public class ConsoleInfo
 		{
-			FILE_TYPE_UNKNOWN = 0x0000,
-			FILE_TYPE_DISK = 0x0001,
-			FILE_TYPE_CHAR = 0x0002,
-			FILE_TYPE_PIPE = 0x0003,
-			FILE_TYPE_REMOTE = 0x8000
+			private enum FileType : uint
+			{
+				FILE_TYPE_UNKNOWN = 0x0000,
+				FILE_TYPE_DISK = 0x0001,
+				FILE_TYPE_CHAR = 0x0002,
+				FILE_TYPE_PIPE = 0x0003,
+				FILE_TYPE_REMOTE = 0x8000
+			}
+	
+			private enum STDHandle : uint
+			{
+				STD_INPUT_HANDLE = unchecked((uint)-10),
+				STD_OUTPUT_HANDLE = unchecked((uint)-11),
+				STD_ERROR_HANDLE = unchecked((uint)-12)
+			}
+	
+			[DllImport("Kernel32.dll")]
+			static private extern UIntPtr GetStdHandle(STDHandle stdHandle);
+	
+			[DllImport("Kernel32.dll")]
+			static private extern FileType GetFileType(UIntPtr hFile);
+	
+			static public bool IsInputRedirected()
+			{
+				UIntPtr hInput = GetStdHandle(STDHandle.STD_INPUT_HANDLE);
+				FileType fileType = (FileType)GetFileType(hInput);
+				if ((fileType == FileType.FILE_TYPE_CHAR) || (fileType == FileType.FILE_TYPE_UNKNOWN))
+					return false;
+				return true;
+			}
+	
+			static public bool IsOutputRedirected()
+			{
+				UIntPtr hOutput = GetStdHandle(STDHandle.STD_OUTPUT_HANDLE);
+				FileType fileType = (FileType)GetFileType(hOutput);
+				if ((fileType == FileType.FILE_TYPE_CHAR) || (fileType == FileType.FILE_TYPE_UNKNOWN))
+					return false;
+				return true;
+			}
+	
+			static public bool IsErrorRedirected()
+			{
+				UIntPtr hError = GetStdHandle(STDHandle.STD_ERROR_HANDLE);
+				FileType fileType = (FileType)GetFileType(hError);
+				if ((fileType == FileType.FILE_TYPE_CHAR) || (fileType == FileType.FILE_TYPE_UNKNOWN))
+					return false;
+				return true;
+			}
 		}
-
-		private enum STDHandle : uint
+	
+	
+		internal class PS2EXEHostUI : PSHostUserInterface
 		{
-			STD_INPUT_HANDLE = unchecked((uint)-10),
-			STD_OUTPUT_HANDLE = unchecked((uint)-11),
-			STD_ERROR_HANDLE = unchecked((uint)-12)
-		}
-
-		[DllImport("Kernel32.dll")]
-		static private extern UIntPtr GetStdHandle(STDHandle stdHandle);
-
-		[DllImport("Kernel32.dll")]
-		static private extern FileType GetFileType(UIntPtr hFile);
-
-		static public bool IsInputRedirected()
-		{
-			UIntPtr hInput = GetStdHandle(STDHandle.STD_INPUT_HANDLE);
-			FileType fileType = (FileType)GetFileType(hInput);
-			if ((fileType == FileType.FILE_TYPE_CHAR) || (fileType == FileType.FILE_TYPE_UNKNOWN))
-				return false;
-			return true;
-		}
-
-		static public bool IsOutputRedirected()
-		{
-			UIntPtr hOutput = GetStdHandle(STDHandle.STD_OUTPUT_HANDLE);
-			FileType fileType = (FileType)GetFileType(hOutput);
-			if ((fileType == FileType.FILE_TYPE_CHAR) || (fileType == FileType.FILE_TYPE_UNKNOWN))
-				return false;
-			return true;
-		}
-
-		static public bool IsErrorRedirected()
-		{
-			UIntPtr hError = GetStdHandle(STDHandle.STD_ERROR_HANDLE);
-			FileType fileType = (FileType)GetFileType(hError);
-			if ((fileType == FileType.FILE_TYPE_CHAR) || (fileType == FileType.FILE_TYPE_UNKNOWN))
-				return false;
-			return true;
-		}
-	}
-
-
-	internal class PS2EXEHostUI : PSHostUserInterface
-	{
-		private PS2EXEHostRawUI rawUI = null;
-
-		public ConsoleColor ErrorForegroundColor = ConsoleColor.Red;
-		public ConsoleColor ErrorBackgroundColor = ConsoleColor.Black;
-
-		public ConsoleColor WarningForegroundColor = ConsoleColor.Yellow;
-		public ConsoleColor WarningBackgroundColor = ConsoleColor.Black;
-
-		public ConsoleColor DebugForegroundColor = ConsoleColor.Yellow;
-		public ConsoleColor DebugBackgroundColor = ConsoleColor.Black;
-
-		public ConsoleColor VerboseForegroundColor = ConsoleColor.Yellow;
-		public ConsoleColor VerboseBackgroundColor = ConsoleColor.Black;
-
+			private PS2EXEHostRawUI rawUI = null;
+	
+			public ConsoleColor ErrorForegroundColor = ConsoleColor.Red;
+			public ConsoleColor ErrorBackgroundColor = ConsoleColor.Black;
+	
+			public ConsoleColor WarningForegroundColor = ConsoleColor.Yellow;
+			public ConsoleColor WarningBackgroundColor = ConsoleColor.Black;
+	
+			public ConsoleColor DebugForegroundColor = ConsoleColor.Yellow;
+			public ConsoleColor DebugBackgroundColor = ConsoleColor.Black;
+	
+			public ConsoleColor VerboseForegroundColor = ConsoleColor.Yellow;
+			public ConsoleColor VerboseBackgroundColor = ConsoleColor.Black;
+	
 	$(if (!$noConsole)
 			{
 				@"
@@ -1765,11 +1834,11 @@ namespace ik.PowerShell
 		public ConsoleColor ProgressForegroundColor = ConsoleColor.DarkCyan;
 "@
 			})
-		public ConsoleColor ProgressBackgroundColor = ConsoleColor.DarkCyan;
-
-		public PS2EXEHostUI() : base()
-		{
-			rawUI = new PS2EXEHostRawUI();
+			public ConsoleColor ProgressBackgroundColor = ConsoleColor.DarkCyan;
+	
+			public PS2EXEHostUI() : base()
+			{
+				rawUI = new PS2EXEHostRawUI();
 	$(if (!$noConsole)
 			{
 				@"
@@ -1777,10 +1846,10 @@ namespace ik.PowerShell
 			rawUI.BackgroundColor = Console.BackgroundColor;
 "@
 			})
-		}
-
-		public override Dictionary<string, PSObject> Prompt(string caption, string message, System.Collections.ObjectModel.Collection<FieldDescription> descriptions)
-		{
+			}
+	
+			public override Dictionary<string, PSObject> Prompt(string caption, string message, System.Collections.ObjectModel.Collection<FieldDescription> descriptions)
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -1804,29 +1873,29 @@ namespace ik.PowerShell
 			ibmessage = "";
 "@
 			})
-			Dictionary<string, PSObject> ret = new Dictionary<string, PSObject>();
-			foreach (FieldDescription cd in descriptions)
-			{
-				Type t = null;
-				if (string.IsNullOrEmpty(cd.ParameterAssemblyFullName))
-					t = typeof(string);
-				else
-					t = Type.GetType(cd.ParameterAssemblyFullName);
-
-				if (t.IsArray)
+				Dictionary<string, PSObject> ret = new Dictionary<string, PSObject>();
+				foreach (FieldDescription cd in descriptions)
 				{
-					Type elementType = t.GetElementType();
-					Type genericListType = Type.GetType("System.Collections.Generic.List"+((char)0x60).ToString()+"1");
-					genericListType = genericListType.MakeGenericType(new Type[] { elementType });
-					ConstructorInfo constructor = genericListType.GetConstructor(BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, Type.EmptyTypes, null);
-					object resultList = constructor.Invoke(null);
-
-					int index = 0;
-					string data = "";
-					do
+					Type t = null;
+					if (string.IsNullOrEmpty(cd.ParameterAssemblyFullName))
+						t = typeof(string);
+					else
+						t = Type.GetType(cd.ParameterAssemblyFullName);
+	
+					if (t.IsArray)
 					{
-						try
+						Type elementType = t.GetElementType();
+						Type genericListType = Type.GetType("System.Collections.Generic.List"+((char)0x60).ToString()+"1");
+						genericListType = genericListType.MakeGenericType(new Type[] { elementType });
+						ConstructorInfo constructor = genericListType.GetConstructor(BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, Type.EmptyTypes, null);
+						object resultList = constructor.Invoke(null);
+	
+						int index = 0;
+						string data = "";
+						do
 						{
+							try
+							{
 	$(if (!$noConsole)
 			{
 				@"
@@ -1839,33 +1908,33 @@ namespace ik.PowerShell
 							if (!string.IsNullOrEmpty(cd.Name)) ibmessage = string.Format("{0}[{1}]: ", cd.Name, index);
 "@
 			})
-							data = ReadLine();
-							if (string.IsNullOrEmpty(data))
-								break;
-
-							object o = System.Convert.ChangeType(data, elementType);
-							genericListType.InvokeMember("Add", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, resultList, new object[] { o });
-						}
-						catch (Exception e)
-						{
-							throw e;
-						}
-						index++;
-					} while (true);
-
-					System.Array retArray = (System.Array )genericListType.InvokeMember("ToArray", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, resultList, null);
-					ret.Add(cd.Name, new PSObject(retArray));
-				}
-				else
-				{
-					object o = null;
-					string l = null;
-					try
-					{
-						if (t != typeof(System.Security.SecureString))
-						{
-							if (t != typeof(System.Management.Automation.PSCredential))
+								data = ReadLine();
+								if (string.IsNullOrEmpty(data))
+									break;
+	
+								object o = System.Convert.ChangeType(data, elementType);
+								genericListType.InvokeMember("Add", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, resultList, new object[] { o });
+							}
+							catch (Exception e)
 							{
+								throw e;
+							}
+							index++;
+						} while (true);
+	
+						System.Array retArray = (System.Array )genericListType.InvokeMember("ToArray", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, resultList, null);
+						ret.Add(cd.Name, new PSObject(retArray));
+					}
+					else
+					{
+						object o = null;
+						string l = null;
+						try
+						{
+							if (t != typeof(System.Security.SecureString))
+							{
+								if (t != typeof(System.Management.Automation.PSCredential))
+								{
 	$(if (!$noConsole)
 			{
 				@"
@@ -1881,34 +1950,34 @@ namespace ik.PowerShell
 								if (!string.IsNullOrEmpty(cd.HelpMessage)) ibmessage += "\n(Type !? for help.)";
 "@
 			})
-								do {
-									l = ReadLine();
-									if (l == "!?")
-										WriteLine(cd.HelpMessage);
-									else
-									{
-										if (string.IsNullOrEmpty(l)) o = cd.DefaultValue;
-										if (o == null)
+									do {
+										l = ReadLine();
+										if (l == "!?")
+											WriteLine(cd.HelpMessage);
+										else
 										{
-											try {
-												o = System.Convert.ChangeType(l, t);
-											}
-											catch {
-												Write("Wrong format, please repeat input: ");
-												l = "!?";
+											if (string.IsNullOrEmpty(l)) o = cd.DefaultValue;
+											if (o == null)
+											{
+												try {
+													o = System.Convert.ChangeType(l, t);
+												}
+												catch {
+													Write("Wrong format, please repeat input: ");
+													l = "!?";
+												}
 											}
 										}
-									}
-								} while (l == "!?");
+									} while (l == "!?");
+								}
+								else
+								{
+									PSCredential pscred = PromptForCredential("", "", "", "");
+									o = pscred;
+								}
 							}
 							else
 							{
-								PSCredential pscred = PromptForCredential("", "", "", "");
-								o = pscred;
-							}
-						}
-						else
-						{
 	$(if (!$noConsole)
 			{
 				@"
@@ -1921,20 +1990,20 @@ namespace ik.PowerShell
 								if (!string.IsNullOrEmpty(cd.Name)) ibmessage = string.Format("{0}: ", cd.Name);
 "@
 			})
-
-							SecureString pwd = null;
-							pwd = ReadLineAsSecureString();
-							o = pwd;
+	
+								SecureString pwd = null;
+								pwd = ReadLineAsSecureString();
+								o = pwd;
+							}
+	
+							ret.Add(cd.Name, new PSObject(o));
 						}
-
-						ret.Add(cd.Name, new PSObject(o));
-					}
-					catch (Exception e)
-					{
-						throw e;
+						catch (Exception e)
+						{
+							throw e;
+						}
 					}
 				}
-			}
 	$(if ($noConsole)
 			{
 				@"
@@ -1943,11 +2012,11 @@ namespace ik.PowerShell
 			ibmessage = "";
 "@
 			})
-			return ret;
-		}
-
-		public override int PromptForChoice(string caption, string message, System.Collections.ObjectModel.Collection<ChoiceDescription> choices, int defaultChoice)
-		{
+				return ret;
+			}
+	
+			public override int PromptForChoice(string caption, string message, System.Collections.ObjectModel.Collection<ChoiceDescription> choices, int defaultChoice)
+			{
 	$(if ($noConsole)
 			{
 				@"
@@ -2010,10 +2079,10 @@ namespace ik.PowerShell
 			return defaultChoice;
 "@
 			})
-		}
-
-		public override PSCredential PromptForCredential(string caption, string message, string userName, string targetName, PSCredentialTypes allowedCredentialTypes, PSCredentialUIOptions options)
-		{
+			}
+	
+			public override PSCredential PromptForCredential(string caption, string message, string userName, string targetName, PSCredentialTypes allowedCredentialTypes, PSCredentialUIOptions options)
+			{
 	$(if (!$noConsole -and !$credentialGUI)
 			{
 				@"
@@ -2063,10 +2132,10 @@ namespace ik.PowerShell
 			return null;
 "@
 			})
-		}
-
-		public override PSCredential PromptForCredential(string caption, string message, string userName, string targetName)
-		{
+			}
+	
+			public override PSCredential PromptForCredential(string caption, string message, string userName, string targetName)
+			{
 	$(if (!$noConsole -and !$credentialGUI)
 			{
 				@"
@@ -2116,16 +2185,16 @@ namespace ik.PowerShell
 			return null;
 "@
 			})
-		}
-
-		public override PSHostRawUserInterface RawUI
-		{
-			get
-			{
-				return rawUI;
 			}
-		}
-
+	
+			public override PSHostRawUserInterface RawUI
+			{
+				get
+				{
+					return rawUI;
+				}
+			}
+	
 	$(if ($noConsole)
 			{
 				@"
@@ -2133,9 +2202,9 @@ namespace ik.PowerShell
 		private string ibmessage;
 "@
 			})
-
-		public override string ReadLine()
-		{
+	
+			public override string ReadLine()
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -2152,39 +2221,39 @@ namespace ik.PowerShell
 				return "";
 "@
 			})
-		}
-
-		private System.Security.SecureString getPassword()
-		{
-			System.Security.SecureString pwd = new System.Security.SecureString();
-			while (true)
+			}
+	
+			private System.Security.SecureString getPassword()
 			{
-				ConsoleKeyInfo i = Console.ReadKey(true);
-				if (i.Key == ConsoleKey.Enter)
+				System.Security.SecureString pwd = new System.Security.SecureString();
+				while (true)
 				{
-					Console.WriteLine();
-					break;
-				}
-				else if (i.Key == ConsoleKey.Backspace)
-				{
-					if (pwd.Length > 0)
+					ConsoleKeyInfo i = Console.ReadKey(true);
+					if (i.Key == ConsoleKey.Enter)
 					{
-						pwd.RemoveAt(pwd.Length - 1);
-						Console.Write("\b \b");
+						Console.WriteLine();
+						break;
+					}
+					else if (i.Key == ConsoleKey.Backspace)
+					{
+						if (pwd.Length > 0)
+						{
+							pwd.RemoveAt(pwd.Length - 1);
+							Console.Write("\b \b");
+						}
+					}
+					else
+					{
+						pwd.AppendChar(i.KeyChar);
+						Console.Write("*");
 					}
 				}
-				else
-				{
-					pwd.AppendChar(i.KeyChar);
-					Console.Write("*");
-				}
+				return pwd;
 			}
-			return pwd;
-		}
-
-		public override System.Security.SecureString ReadLineAsSecureString()
-		{
-			System.Security.SecureString secstr = new System.Security.SecureString();
+	
+			public override System.Security.SecureString ReadLineAsSecureString()
+			{
+				System.Security.SecureString secstr = new System.Security.SecureString();
 	$(if (!$noConsole)
 			{
 				@"
@@ -2203,12 +2272,12 @@ namespace ik.PowerShell
 			}
 "@
 			})
-			return secstr;
-		}
-
-		// called by Write-Host
-		public override void Write(ConsoleColor foregroundColor, ConsoleColor backgroundColor, string value)
-		{
+				return secstr;
+			}
+	
+			// called by Write-Host
+			public override void Write(ConsoleColor foregroundColor, ConsoleColor backgroundColor, string value)
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -2227,10 +2296,10 @@ namespace ik.PowerShell
 				MessageBox.Show(value, System.AppDomain.CurrentDomain.FriendlyName);
 "@
 			})
-		}
-
-		public override void Write(string value)
-		{
+			}
+	
+			public override void Write(string value)
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -2244,11 +2313,11 @@ namespace ik.PowerShell
 				MessageBox.Show(value, System.AppDomain.CurrentDomain.FriendlyName);
 "@
 			})
-		}
-
-		// called by Write-Debug
-		public override void WriteDebugLine(string message)
-		{
+			}
+	
+			// called by Write-Debug
+			public override void WriteDebugLine(string message)
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -2261,11 +2330,11 @@ namespace ik.PowerShell
 			MessageBox.Show(message, System.AppDomain.CurrentDomain.FriendlyName, MessageBoxButtons.OK, MessageBoxIcon.Information);
 "@
 			})
-		}
-
-		// called by Write-Error
-		public override void WriteErrorLine(string value)
-		{
+			}
+	
+			// called by Write-Error
+			public override void WriteErrorLine(string value)
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -2281,10 +2350,10 @@ namespace ik.PowerShell
 			MessageBox.Show(value, System.AppDomain.CurrentDomain.FriendlyName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 "@
 			})
-		}
-
-		public override void WriteLine()
-		{
+			}
+	
+			public override void WriteLine()
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -2297,10 +2366,10 @@ namespace ik.PowerShell
 			MessageBox.Show("", System.AppDomain.CurrentDomain.FriendlyName);
 "@
 			})
-		}
-
-		public override void WriteLine(ConsoleColor foregroundColor, ConsoleColor backgroundColor, string value)
-		{
+			}
+	
+			public override void WriteLine(ConsoleColor foregroundColor, ConsoleColor backgroundColor, string value)
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -2319,11 +2388,11 @@ namespace ik.PowerShell
 				MessageBox.Show(value, System.AppDomain.CurrentDomain.FriendlyName);
 "@
 			})
-		}
-
-		// called by Write-Output
-		public override void WriteLine(string value)
-		{
+			}
+	
+			// called by Write-Output
+			public override void WriteLine(string value)
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -2337,16 +2406,16 @@ namespace ik.PowerShell
 				MessageBox.Show(value, System.AppDomain.CurrentDomain.FriendlyName);
 "@
 			})
-		}
-
+			}
+	
 	$(if ($noConsole)
 			{
 				@"
 		public ProgressForm pf = null;
 "@
 			})
-		public override void WriteProgress(long sourceId, ProgressRecord record)
-		{
+			public override void WriteProgress(long sourceId, ProgressRecord record)
+			{
 	$(if ($noConsole)
 			{
 				@"
@@ -2362,11 +2431,11 @@ namespace ik.PowerShell
 			}
 "@
 			})
-		}
-
-		// called by Write-Verbose
-		public override void WriteVerboseLine(string message)
-		{
+			}
+	
+			// called by Write-Verbose
+			public override void WriteVerboseLine(string message)
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -2379,11 +2448,11 @@ namespace ik.PowerShell
 			MessageBox.Show(message, System.AppDomain.CurrentDomain.FriendlyName, MessageBoxButtons.OK, MessageBoxIcon.Information);
 "@
 			})
-		}
-
-		// called by Write-Warning
-		public override void WriteWarningLine(string message)
-		{
+			}
+	
+			// called by Write-Warning
+			public override void WriteWarningLine(string message)
+			{
 	$(if (!$noConsole)
 			{
 				@"
@@ -2396,250 +2465,250 @@ namespace ik.PowerShell
 			MessageBox.Show(message, System.AppDomain.CurrentDomain.FriendlyName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 "@
 			})
-		}
-	}
-
-	internal class PS2EXEHost : PSHost
-	{
-		private PS2EXEApp parent;
-		private PS2EXEHostUI ui = null;
-
-		private CultureInfo originalCultureInfo = System.Threading.Thread.CurrentThread.CurrentCulture;
-
-		private CultureInfo originalUICultureInfo = System.Threading.Thread.CurrentThread.CurrentUICulture;
-
-		private Guid myId = Guid.NewGuid();
-
-		public PS2EXEHost(PS2EXEApp app, PS2EXEHostUI ui)
-		{
-			this.parent = app;
-			this.ui = ui;
-		}
-
-		public class ConsoleColorProxy
-		{
-			private PS2EXEHostUI _ui;
-
-			public ConsoleColorProxy(PS2EXEHostUI ui)
-			{
-				if (ui == null) throw new ArgumentNullException("ui");
-				_ui = ui;
-			}
-
-			public ConsoleColor ErrorForegroundColor
-			{
-				get
-				{ return _ui.ErrorForegroundColor; }
-				set
-				{ _ui.ErrorForegroundColor = value; }
-			}
-
-			public ConsoleColor ErrorBackgroundColor
-			{
-				get
-				{ return _ui.ErrorBackgroundColor; }
-				set
-				{ _ui.ErrorBackgroundColor = value; }
-			}
-
-			public ConsoleColor WarningForegroundColor
-			{
-				get
-				{ return _ui.WarningForegroundColor; }
-				set
-				{ _ui.WarningForegroundColor = value; }
-			}
-
-			public ConsoleColor WarningBackgroundColor
-			{
-				get
-				{ return _ui.WarningBackgroundColor; }
-				set
-				{ _ui.WarningBackgroundColor = value; }
-			}
-
-			public ConsoleColor DebugForegroundColor
-			{
-				get
-				{ return _ui.DebugForegroundColor; }
-				set
-				{ _ui.DebugForegroundColor = value; }
-			}
-
-			public ConsoleColor DebugBackgroundColor
-			{
-				get
-				{ return _ui.DebugBackgroundColor; }
-				set
-				{ _ui.DebugBackgroundColor = value; }
-			}
-
-			public ConsoleColor VerboseForegroundColor
-			{
-				get
-				{ return _ui.VerboseForegroundColor; }
-				set
-				{ _ui.VerboseForegroundColor = value; }
-			}
-
-			public ConsoleColor VerboseBackgroundColor
-			{
-				get
-				{ return _ui.VerboseBackgroundColor; }
-				set
-				{ _ui.VerboseBackgroundColor = value; }
-			}
-
-			public ConsoleColor ProgressForegroundColor
-			{
-				get
-				{ return _ui.ProgressForegroundColor; }
-				set
-				{ _ui.ProgressForegroundColor = value; }
-			}
-
-			public ConsoleColor ProgressBackgroundColor
-			{
-				get
-				{ return _ui.ProgressBackgroundColor; }
-				set
-				{ _ui.ProgressBackgroundColor = value; }
 			}
 		}
-
-		public override PSObject PrivateData
+	
+		internal class PS2EXEHost : PSHost
 		{
-			get
+			private PS2EXEApp parent;
+			private PS2EXEHostUI ui = null;
+	
+			private CultureInfo originalCultureInfo = System.Threading.Thread.CurrentThread.CurrentCulture;
+	
+			private CultureInfo originalUICultureInfo = System.Threading.Thread.CurrentThread.CurrentUICulture;
+	
+			private Guid myId = Guid.NewGuid();
+	
+			public PS2EXEHost(PS2EXEApp app, PS2EXEHostUI ui)
 			{
-				if (ui == null) return null;
-				return _consoleColorProxy ?? (_consoleColorProxy = PSObject.AsPSObject(new ConsoleColorProxy(ui)));
+				this.parent = app;
+				this.ui = ui;
 			}
-		}
-
-		private PSObject _consoleColorProxy;
-
-		public override System.Globalization.CultureInfo CurrentCulture
-		{
-			get
+	
+			public class ConsoleColorProxy
 			{
-				return this.originalCultureInfo;
-			}
-		}
-
-		public override System.Globalization.CultureInfo CurrentUICulture
-		{
-			get
-			{
-				return this.originalUICultureInfo;
-			}
-		}
-
-		public override Guid InstanceId
-		{
-			get
-			{
-				return this.myId;
-			}
-		}
-
-		public override string Name
-		{
-			get
-			{
-				return "PS2EXE_Host";
-			}
-		}
-
-		public override PSHostUserInterface UI
-		{
-			get
-			{
-				return ui;
-			}
-		}
-
-		public override Version Version
-		{
-			get
-			{
-				return new Version(0, 5, 0, 13);
-			}
-		}
-
-		public override void EnterNestedPrompt()
-		{
-		}
-
-		public override void ExitNestedPrompt()
-		{
-		}
-
-		public override void NotifyBeginApplication()
-		{
-			return;
-		}
-
-		public override void NotifyEndApplication()
-		{
-			return;
-		}
-
-		public override void SetShouldExit(int exitCode)
-		{
-			this.parent.ShouldExit = true;
-			this.parent.ExitCode = exitCode;
-		}
-	}
-
-	internal interface PS2EXEApp
-	{
-		bool ShouldExit { get; set; }
-		int ExitCode { get; set; }
-	}
-
-	internal class PS2EXE : PS2EXEApp
-	{
-		private bool shouldExit;
-
-		private int exitCode;
-
-		public bool ShouldExit
-		{
-			get { return this.shouldExit; }
-			set { this.shouldExit = value; }
-		}
-
-		public int ExitCode
-		{
-			get { return this.exitCode; }
-			set { this.exitCode = value; }
-		}
-
-		$(if ($Sta) { "[STAThread]" })$(if ($Mta) { "[MTAThread]" })
-		private static int Main(string[] args)
-		{
-			$culture
-
-			PS2EXE me = new PS2EXE();
-
-			bool paramWait = false;
-			string extractFN = string.Empty;
-
-			PS2EXEHostUI ui = new PS2EXEHostUI();
-			PS2EXEHost host = new PS2EXEHost(me, ui);
-			System.Threading.ManualResetEvent mre = new System.Threading.ManualResetEvent(false);
-
-			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-
-			try
-			{
-				using (Runspace myRunSpace = RunspaceFactory.CreateRunspace(host))
+				private PS2EXEHostUI _ui;
+	
+				public ConsoleColorProxy(PS2EXEHostUI ui)
 				{
-					$(if ($Sta -or $Mta) { "myRunSpace.ApartmentState = System.Threading.ApartmentState." })$(if ($Sta) { "STA" })$(if ($Mta) { "MTA" });
-					myRunSpace.Open();
-
-					using (System.Management.Automation.PowerShell powershell = System.Management.Automation.PowerShell.Create())
+					if (ui == null) throw new ArgumentNullException("ui");
+					_ui = ui;
+				}
+	
+				public ConsoleColor ErrorForegroundColor
+				{
+					get
+					{ return _ui.ErrorForegroundColor; }
+					set
+					{ _ui.ErrorForegroundColor = value; }
+				}
+	
+				public ConsoleColor ErrorBackgroundColor
+				{
+					get
+					{ return _ui.ErrorBackgroundColor; }
+					set
+					{ _ui.ErrorBackgroundColor = value; }
+				}
+	
+				public ConsoleColor WarningForegroundColor
+				{
+					get
+					{ return _ui.WarningForegroundColor; }
+					set
+					{ _ui.WarningForegroundColor = value; }
+				}
+	
+				public ConsoleColor WarningBackgroundColor
+				{
+					get
+					{ return _ui.WarningBackgroundColor; }
+					set
+					{ _ui.WarningBackgroundColor = value; }
+				}
+	
+				public ConsoleColor DebugForegroundColor
+				{
+					get
+					{ return _ui.DebugForegroundColor; }
+					set
+					{ _ui.DebugForegroundColor = value; }
+				}
+	
+				public ConsoleColor DebugBackgroundColor
+				{
+					get
+					{ return _ui.DebugBackgroundColor; }
+					set
+					{ _ui.DebugBackgroundColor = value; }
+				}
+	
+				public ConsoleColor VerboseForegroundColor
+				{
+					get
+					{ return _ui.VerboseForegroundColor; }
+					set
+					{ _ui.VerboseForegroundColor = value; }
+				}
+	
+				public ConsoleColor VerboseBackgroundColor
+				{
+					get
+					{ return _ui.VerboseBackgroundColor; }
+					set
+					{ _ui.VerboseBackgroundColor = value; }
+				}
+	
+				public ConsoleColor ProgressForegroundColor
+				{
+					get
+					{ return _ui.ProgressForegroundColor; }
+					set
+					{ _ui.ProgressForegroundColor = value; }
+				}
+	
+				public ConsoleColor ProgressBackgroundColor
+				{
+					get
+					{ return _ui.ProgressBackgroundColor; }
+					set
+					{ _ui.ProgressBackgroundColor = value; }
+				}
+			}
+	
+			public override PSObject PrivateData
+			{
+				get
+				{
+					if (ui == null) return null;
+					return _consoleColorProxy ?? (_consoleColorProxy = PSObject.AsPSObject(new ConsoleColorProxy(ui)));
+				}
+			}
+	
+			private PSObject _consoleColorProxy;
+	
+			public override System.Globalization.CultureInfo CurrentCulture
+			{
+				get
+				{
+					return this.originalCultureInfo;
+				}
+			}
+	
+			public override System.Globalization.CultureInfo CurrentUICulture
+			{
+				get
+				{
+					return this.originalUICultureInfo;
+				}
+			}
+	
+			public override Guid InstanceId
+			{
+				get
+				{
+					return this.myId;
+				}
+			}
+	
+			public override string Name
+			{
+				get
+				{
+					return "PS2EXE_Host";
+				}
+			}
+	
+			public override PSHostUserInterface UI
+			{
+				get
+				{
+					return ui;
+				}
+			}
+	
+			public override Version Version
+			{
+				get
+				{
+					return new Version(0, 5, 0, 13);
+				}
+			}
+	
+			public override void EnterNestedPrompt()
+			{
+			}
+	
+			public override void ExitNestedPrompt()
+			{
+			}
+	
+			public override void NotifyBeginApplication()
+			{
+				return;
+			}
+	
+			public override void NotifyEndApplication()
+			{
+				return;
+			}
+	
+			public override void SetShouldExit(int exitCode)
+			{
+				this.parent.ShouldExit = true;
+				this.parent.ExitCode = exitCode;
+			}
+		}
+	
+		internal interface PS2EXEApp
+		{
+			bool ShouldExit { get; set; }
+			int ExitCode { get; set; }
+		}
+	
+		internal class PS2EXE : PS2EXEApp
+		{
+			private bool shouldExit;
+	
+			private int exitCode;
+	
+			public bool ShouldExit
+			{
+				get { return this.shouldExit; }
+				set { this.shouldExit = value; }
+			}
+	
+			public int ExitCode
+			{
+				get { return this.exitCode; }
+				set { this.exitCode = value; }
+			}
+	
+			$(if ($Sta) { "[STAThread]" })$(if ($Mta) { "[MTAThread]" })
+			private static int Main(string[] args)
+			{
+				$culture
+	
+				PS2EXE me = new PS2EXE();
+	
+				bool paramWait = false;
+				string extractFN = string.Empty;
+	
+				PS2EXEHostUI ui = new PS2EXEHostUI();
+				PS2EXEHost host = new PS2EXEHost(me, ui);
+				System.Threading.ManualResetEvent mre = new System.Threading.ManualResetEvent(false);
+	
+				AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+	
+				try
+				{
+					using (Runspace myRunSpace = RunspaceFactory.CreateRunspace(host))
 					{
+						$(if ($Sta -or $Mta) { "myRunSpace.ApartmentState = System.Threading.ApartmentState." })$(if ($Sta) { "STA" })$(if ($Mta) { "MTA" });
+						myRunSpace.Open();
+	
+						using (System.Management.Automation.PowerShell powershell = System.Management.Automation.PowerShell.Create())
+						{
 	$(if (!$noConsole)
 			{
 				@"
@@ -2659,14 +2728,14 @@ namespace ik.PowerShell
 						});
 "@
 			})
-
-						powershell.Runspace = myRunSpace;
-						powershell.Streams.Error.DataAdded += new EventHandler<DataAddedEventArgs>(delegate(object sender, DataAddedEventArgs e)
-						{
-							ui.WriteErrorLine(((PSDataCollection<ErrorRecord>)sender)[e.Index].ToString());
-						});
-
-						PSDataCollection<string> colInput = new PSDataCollection<string>();
+	
+							powershell.Runspace = myRunSpace;
+							powershell.Streams.Error.DataAdded += new EventHandler<DataAddedEventArgs>(delegate(object sender, DataAddedEventArgs e)
+							{
+								ui.WriteErrorLine(((PSDataCollection<ErrorRecord>)sender)[e.Index].ToString());
+							});
+	
+							PSDataCollection<string> colInput = new PSDataCollection<string>();
 	$(if (!$runtime20)
 			{
 				@"
@@ -2680,25 +2749,25 @@ namespace ik.PowerShell
 						}
 "@
 			})
-						colInput.Complete();
-
-						PSDataCollection<PSObject> colOutput = new PSDataCollection<PSObject>();
-						colOutput.DataAdded += new EventHandler<DataAddedEventArgs>(delegate(object sender, DataAddedEventArgs e)
-						{
-							ui.WriteLine(colOutput[e.Index].ToString());
-						});
-
-						int separator = 0;
-						int idx = 0;
-						foreach (string s in args)
-						{
-							if (string.Compare(s, "-wait", true) == 0)
-								paramWait = true;
-							else if (s.StartsWith("-extract", StringComparison.InvariantCultureIgnoreCase))
+							colInput.Complete();
+	
+							PSDataCollection<PSObject> colOutput = new PSDataCollection<PSObject>();
+							colOutput.DataAdded += new EventHandler<DataAddedEventArgs>(delegate(object sender, DataAddedEventArgs e)
 							{
-								string[] s1 = s.Split(new string[] { ":" }, 2, StringSplitOptions.RemoveEmptyEntries);
-								if (s1.Length != 2)
+								ui.WriteLine(colOutput[e.Index].ToString());
+							});
+	
+							int separator = 0;
+							int idx = 0;
+							foreach (string s in args)
+							{
+								if (string.Compare(s, "-wait", true) == 0)
+									paramWait = true;
+								else if (s.StartsWith("-extract", StringComparison.InvariantCultureIgnoreCase))
 								{
+									string[] s1 = s.Split(new string[] { ":" }, 2, StringSplitOptions.RemoveEmptyEntries);
+									if (s1.Length != 2)
+									{
 	$(if (!$noConsole)
 			{
 				@"
@@ -2711,24 +2780,24 @@ namespace ik.PowerShell
 									MessageBox.Show("If you specify the -extract option you need to add a file for extraction in this way\r\n   -extract:\"<filename>\"", System.AppDomain.CurrentDomain.FriendlyName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 "@
 			})
-									return 1;
+										return 1;
+									}
+									extractFN = s1[1].Trim(new char[] { '\"' });
 								}
-								extractFN = s1[1].Trim(new char[] { '\"' });
+								else if (string.Compare(s, "-end", true) == 0)
+								{
+									separator = idx + 1;
+									break;
+								}
+								else if (string.Compare(s, "-debug", true) == 0)
+								{
+									System.Diagnostics.Debugger.Launch();
+									break;
+								}
+								idx++;
 							}
-							else if (string.Compare(s, "-end", true) == 0)
-							{
-								separator = idx + 1;
-								break;
-							}
-							else if (string.Compare(s, "-debug", true) == 0)
-							{
-								System.Diagnostics.Debugger.Launch();
-								break;
-							}
-							idx++;
-						}
-
-						string script = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(@"$($script)"));
+	
+							string script = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(@"$($script)"));
 
 						if (!string.IsNullOrEmpty(extractFN))
 						{
@@ -2816,9 +2885,9 @@ namespace ik.PowerShell
 			}
 			catch (Exception ex)
 			{
-	$(if (!$noConsole)
-			{
-				@"
+$(if (!$noConsole)
+		{
+			@"
 				Console.Write("An exception occured: ");
 				Console.WriteLine(ex.Message);
 "@
@@ -2829,10 +2898,10 @@ namespace ik.PowerShell
 				MessageBox.Show("An exception occured: " + ex.Message, System.AppDomain.CurrentDomain.FriendlyName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 "@
 			})
-			}
-
-			if (paramWait)
-			{
+				}
+	
+				if (paramWait)
+				{
 	$(if (!$noConsole)
 			{
 				@"
@@ -2846,235 +2915,235 @@ namespace ik.PowerShell
 				MessageBox.Show("Click OK to exit...", System.AppDomain.CurrentDomain.FriendlyName);
 "@
 			})
+				}
+				return me.ExitCode;
 			}
-			return me.ExitCode;
-		}
-
-		static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
-			throw new Exception("Unhandled exception in PS2EXE");
-		}
-	}
-
-}
-"@
-		#endregion
-		
-		$configFileForEXE2 = "<?xml version=""1.0"" encoding=""utf-8"" ?>`r`n<configuration><startup><supportedRuntime version=""v2.0.50727""/></startup></configuration>"
-		$configFileForEXE3 = "<?xml version=""1.0"" encoding=""utf-8"" ?>`r`n<configuration><startup><supportedRuntime version=""v4.0"" sku="".NETFramework,Version=v4.0"" /></startup></configuration>"
-		
-		Write-Host "Compiling file... " -NoNewline
-		$cr = $cop.CompileAssemblyFromSource($cp, $programFrame)
-		if ($cr.Errors.Count -gt 0)
-		{
-			Write-Host ""
-			Write-Host ""
-			if (Test-Path $outputFile)
+	
+			static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 			{
-				Remove-Item $outputFile -Verbose:$FALSE
+				throw new Exception("Unhandled exception in PS2EXE");
 			}
-			Write-Host -ForegroundColor red "Could not create the PowerShell .exe file because of compilation errors. Use -verbose parameter to see details."
-			$cr.Errors | % { Write-Verbose $_ -Verbose:$verbose }
+		}
+	
+	}
+"@
+	#endregion
+	
+	$configFileForEXE2 = "<?xml version=""1.0"" encoding=""utf-8"" ?>`r`n<configuration><startup><supportedRuntime version=""v2.0.50727""/></startup></configuration>"
+	$configFileForEXE3 = "<?xml version=""1.0"" encoding=""utf-8"" ?>`r`n<configuration><startup><supportedRuntime version=""v4.0"" sku="".NETFramework,Version=v4.0"" /></startup></configuration>"
+	
+	Write-Host "Compiling file... " -NoNewline
+	$cr = $cop.CompileAssemblyFromSource($cp, $programFrame)
+	if ($cr.Errors.Count -gt 0)
+	{
+		Write-Host ""
+		Write-Host ""
+		if (Test-Path $outputFile)
+		{
+			Remove-Item $outputFile -Verbose:$FALSE
+		}
+		Write-Host -ForegroundColor red "Could not create the PowerShell .exe file because of compilation errors. Use -verbose parameter to see details."
+		$cr.Errors | % { Write-Verbose $_ -Verbose:$verbose }
+	}
+	else
+	{
+		Write-Host ""
+		Write-Host ""
+		if (Test-Path $outputFile)
+		{
+			Write-Host "Output file " -NoNewline
+			Write-Host $outputFile -NoNewline
+			Write-Host " written"
+			
+			if ($debug)
+			{
+				$cr.TempFiles | ? { $_ -ilike "*.cs" } | select -first 1 | % {
+					$dstSrc = ([System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($outputFile), [System.IO.Path]::GetFileNameWithoutExtension($outputFile) + ".cs"))
+					Write-Host "Source file name for debug copied: $($dstSrc)"
+					Copy-Item -Path $_ -Destination $dstSrc -Force
+				}
+				$cr.TempFiles | Remove-Item -Verbose:$FALSE -Force -ErrorAction SilentlyContinue
+			}
+			if (!$noConfigfile)
+			{
+				if ($runtime20)
+				{
+					$configFileForEXE2 | Set-Content ($outputFile + ".config") -Encoding UTF8
+					Write-Host "Config file for EXE created."
+				}
+				if ($runtime40)
+				{
+					$configFileForEXE3 | Set-Content ($outputFile + ".config") -Encoding UTF8
+					Write-Host "Config file for EXE created."
+				}
+			}
 		}
 		else
 		{
-			Write-Host ""
-			Write-Host ""
-			if (Test-Path $outputFile)
-			{
-				Write-Host "Output file " -NoNewline
-				Write-Host $outputFile -NoNewline
-				Write-Host " written"
-				
-				if ($debug)
-				{
-					$cr.TempFiles | ? { $_ -ilike "*.cs" } | select -first 1 | % {
-						$dstSrc = ([System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($outputFile), [System.IO.Path]::GetFileNameWithoutExtension($outputFile) + ".cs"))
-						Write-Host "Source file name for debug copied: $($dstSrc)"
-						Copy-Item -Path $_ -Destination $dstSrc -Force
-					}
-					$cr.TempFiles | Remove-Item -Verbose:$FALSE -Force -ErrorAction SilentlyContinue
-				}
-				if (!$noConfigfile)
-				{
-					if ($runtime20)
-					{
-						$configFileForEXE2 | Set-Content ($outputFile + ".config") -Encoding UTF8
-						Write-Host "Config file for EXE created."
-					}
-					if ($runtime40)
-					{
-						$configFileForEXE3 | Set-Content ($outputFile + ".config") -Encoding UTF8
-						Write-Host "Config file for EXE created."
-					}
-				}
-			}
-			else
-			{
-				Write-Host "Output file " -NoNewline -ForegroundColor Red
-				Write-Host $outputFile -ForegroundColor Red -NoNewline
-				Write-Host " not written" -ForegroundColor Red
-			}
-		}
-		
-		if ($requireAdmin)
-		{
-			if (Test-Path $($outputFile + ".win32manifest"))
-			{
-				Remove-Item $($outputFile + ".win32manifest") -Verbose:$FALSE
-			}
+			Write-Host "Output file " -NoNewline -ForegroundColor Red
+			Write-Host $outputFile -ForegroundColor Red -NoNewline
+			Write-Host " not written" -ForegroundColor Red
 		}
 	}
 	
-	#Grabs MSI details
-	#Source: http://www.scconfigmgr.com/2014/08/22/how-to-get-msi-file-information-with-powershell/
-	function getMSIData
+	if ($requireAdmin)
 	{
-		param (
-			[parameter(Mandatory = $true)]
-			[ValidateNotNullOrEmpty()]
-			[System.IO.FileInfo]$Path,
-			[parameter(Mandatory = $true)]
-			[ValidateNotNullOrEmpty()]
-			[ValidateSet("ProductCode", "ProductVersion", "ProductName", "Manufacturer", "ProductLanguage", "FullVersion")]
-			[string]$Property
-		)
-		Process
+		if (Test-Path $($outputFile + ".win32manifest"))
 		{
-			try
-			{
-				# Read property from MSI database
-				$WindowsInstaller = New-Object -ComObject WindowsInstaller.Installer
-				$MSIDatabase = $WindowsInstaller.GetType().InvokeMember("OpenDatabase", "InvokeMethod", $null, $WindowsInstaller, @($Path.FullName, 0))
-				$Query = "SELECT Value FROM Property WHERE Property = '$($Property)'"
-				$View = $MSIDatabase.GetType().InvokeMember("OpenView", "InvokeMethod", $null, $MSIDatabase, ($Query))
-				$View.GetType().InvokeMember("Execute", "InvokeMethod", $null, $View, $null)
-				$Record = $View.GetType().InvokeMember("Fetch", "InvokeMethod", $null, $View, $null)
-				$Value = $Record.GetType().InvokeMember("StringData", "GetProperty", $null, $Record, 1)
-				
-				# Commit database and close view
-				$MSIDatabase.GetType().InvokeMember("Commit", "InvokeMethod", $null, $MSIDatabase, $null)
-				$View.GetType().InvokeMember("Close", "InvokeMethod", $null, $View, $null)
-				$MSIDatabase = $null
-				$View = $null
-				
-				# Return the value
-				return $Value
-			}
-			catch
-			{
-				Write-Host -ForegroundColor Red "Uh oh... your selected file broke me :("; break
-			}
-		}
-		End
-		{
-			# Run garbage collection and release ComObject
-			[System.Runtime.Interopservices.Marshal]::ReleaseComObject($WindowsInstaller) | Out-Null
-			[System.GC]::Collect()
+			Remove-Item $($outputFile + ".win32manifest") -Verbose:$FALSE
 		}
 	}
-	
-	
-	<#
-		.SYNOPSIS
-			Generates command line installation scripts
-		
-		.DESCRIPTION
-			Takes in switches, installationFileName, and other optional parameters to generate powershell installation scripts
-		
-		.PARAMETER installationFileLocation
-			Specify the location of the installation file that you will be generating a script for.
-		
-		.PARAMETER switches
-			Specify special installation switches to add to your script.
-		
-		.PARAMETER installationFileName
-			Specify the installationFileName so it can be named correspondingly.
-		
-		.PARAMETER generateTestScript
-			Specify if you would like to generate a "Test script".
-		
-		.PARAMETER productCode
-			Specify the product code if you would like to generate an uninstallation script.
-		
-		.PARAMETER desktopIconName
-			Specify a name of your desktop icon for the script to move over.
-		
-		.PARAMETER startMenuShortcut
-			Specify a name of your shortcut for it to be copied into the start menu during installation.
-		
-		.PARAMETER copyOverFile
-			Specify the name of a file/folder you want your script to copy over.
-		
-		.PARAMETER copyIntoDirectory
-			Specify the name of a directory you want your script to copy into.
-		
-		.PARAMETER extraCode
-			Specify any extra code you want to add to your script
-		
-		.EXAMPLE
-			PS C:\> generateScript -installationFileLocation $installationFileLocation
-		
-		.NOTES
-			Only works for .msi and .exe files
-	#>
-	function generateScript
+}
+
+#Grabs MSI details
+#Source: http://www.scconfigmgr.com/2014/08/22/how-to-get-msi-file-information-with-powershell/
+function getMSIData
+{
+	param (
+		[parameter(Mandatory = $true)]
+		[ValidateNotNullOrEmpty()]
+		[System.IO.FileInfo]$Path,
+		[parameter(Mandatory = $true)]
+		[ValidateNotNullOrEmpty()]
+		[ValidateSet("ProductCode", "ProductVersion", "ProductName", "Manufacturer", "ProductLanguage", "FullVersion")]
+		[string]$Property
+	)
+	Process
 	{
-		param (
-			[Parameter(Mandatory = $true)]
-			$installationFileLocation,
-			[Parameter(Mandatory = $false)]
-			$switches,
-			[Parameter(Mandatory = $false)]
-			$installationFileName,
-			[Parameter(Mandatory = $false)]
-			$generateTestScript,
-			[Parameter(Mandatory = $false)]
-			$productCode,
-			[Parameter(Mandatory = $false)]
-			$desktopIconName,
-			[Parameter(Mandatory = $false)]
-			$startMenuShortcut,
-			[Parameter(Mandatory = $false)]
-			$copyOverFile,
-			[Parameter(Mandatory = $false)]
-			$copyIntoDirectory,
-			[Parameter(Mandatory = $false)]
-			$extraCode
-		)
-		
-		#If generation is complete
-		$complete = "false"
-		
-		#If switches is null
-		if ($switches -eq "")
+		try
 		{
-			$switches = " "
-		}
-		
-		#Set the file name without the extension
-		if ($installationFileName -eq "")
-		{
-			$installationFileName = [IO.Path]::GetFileNameWithoutExtension($installationFileLocation)
-		}
-		
-		#Get the current date
-		$currentDate = Get-Date -DisplayHint Date
-		
-		#Set the file name with the extension
-		$installationFile = Split-Path $installationFileLocation -Leaf
-		
-		#Set the parent directory of the installation file
-		$parentInstallationFile = Split-Path $installationFileLocation -Parent
-		
-		$progressbar1.Value = 10
-		
-		if ($installationFileLocation -match '.msi' -and $complete -match 'false')
-		{
+			# Read property from MSI database
+			$WindowsInstaller = New-Object -ComObject WindowsInstaller.Installer
+			$MSIDatabase = $WindowsInstaller.GetType().InvokeMember("OpenDatabase", "InvokeMethod", $null, $WindowsInstaller, @($Path.FullName, 0))
+			$Query = "SELECT Value FROM Property WHERE Property = '$($Property)'"
+			$View = $MSIDatabase.GetType().InvokeMember("OpenView", "InvokeMethod", $null, $MSIDatabase, ($Query))
+			$View.GetType().InvokeMember("Execute", "InvokeMethod", $null, $View, $null)
+			$Record = $View.GetType().InvokeMember("Fetch", "InvokeMethod", $null, $View, $null)
+			$Value = $Record.GetType().InvokeMember("StringData", "GetProperty", $null, $Record, 1)
 			
-			Write-Host -ForegroundColor Green "Generating Scripts..."
-			#Create installation script
-			New-Item -Path $parentInstallationFile -Name $("install_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
+			# Commit database and close view
+			$MSIDatabase.GetType().InvokeMember("Commit", "InvokeMethod", $null, $MSIDatabase, $null)
+			$View.GetType().InvokeMember("Close", "InvokeMethod", $null, $View, $null)
+			$MSIDatabase = $null
+			$View = $null
+			
+			# Return the value
+			return $Value
+		}
+		catch
+		{
+			Write-Host -ForegroundColor Red "Uh oh... your selected file broke me :("; break
+		}
+	}
+	End
+	{
+		# Run garbage collection and release ComObject
+		[System.Runtime.Interopservices.Marshal]::ReleaseComObject($WindowsInstaller) | Out-Null
+		[System.GC]::Collect()
+	}
+}
+
+
+<#
+	.SYNOPSIS
+		Generates command line installation scripts
+	
+	.DESCRIPTION
+		Takes in switches, installationFileName, and other optional parameters to generate powershell installation scripts
+	
+	.PARAMETER installationFileLocation
+		Specify the location of the installation file that you will be generating a script for.
+	
+	.PARAMETER switches
+		Specify special installation switches to add to your script.
+	
+	.PARAMETER installationFileName
+		Specify the installationFileName so it can be named correspondingly.
+	
+	.PARAMETER generateTestScript
+		Specify if you would like to generate a "Test script".
+	
+	.PARAMETER productCode
+		Specify the product code if you would like to generate an uninstallation script.
+	
+	.PARAMETER desktopIconName
+		Specify a name of your desktop icon for the script to move over.
+	
+	.PARAMETER startMenuShortcut
+		Specify a name of your shortcut for it to be copied into the start menu during installation.
+	
+	.PARAMETER copyOverFile
+		Specify the name of a file/folder you want your script to copy over.
+	
+	.PARAMETER copyIntoDirectory
+		Specify the name of a directory you want your script to copy into.
+	
+	.PARAMETER extraCode
+		Specify any extra code you want to add to your script
+	
+	.EXAMPLE
+		PS C:\> generateScript -installationFileLocation $installationFileLocation
+	
+	.NOTES
+		Only works for .msi and .exe files
+#>
+function generateScript
+{
+	param (
+		[Parameter(Mandatory = $true)]
+		$installationFileLocation,
+		[Parameter(Mandatory = $false)]
+		$switches,
+		[Parameter(Mandatory = $false)]
+		$installationFileName,
+		[Parameter(Mandatory = $false)]
+		$generateTestScript,
+		[Parameter(Mandatory = $false)]
+		$productCode,
+		[Parameter(Mandatory = $false)]
+		$desktopIconName,
+		[Parameter(Mandatory = $false)]
+		$startMenuShortcut,
+		[Parameter(Mandatory = $false)]
+		$copyOverFile,
+		[Parameter(Mandatory = $false)]
+		$copyIntoDirectory,
+		[Parameter(Mandatory = $false)]
+		$extraCode
+	)
+	
+	#If generation is complete
+	$complete = "false"
+	
+	#If switches is null
+	if ($switches -eq "")
+	{
+		$switches = " "
+	}
+	
+	#Set the file name without the extension
+	if ($installationFileName -eq "")
+	{
+		$installationFileName = [IO.Path]::GetFileNameWithoutExtension($installationFileLocation)
+	}
+	
+	#Get the current date
+	$currentDate = Get-Date -DisplayHint Date
+	
+	#Set the file name with the extension
+	$installationFile = Split-Path $installationFileLocation -Leaf
+	
+	#Set the parent directory of the installation file
+	$parentInstallationFile = Split-Path $installationFileLocation -Parent
+	
+	$progressbar1.Value = 10
+	
+	if ($installationFileLocation -match '.msi' -and $complete -match 'false')
+	{
+		
+		Write-Host -ForegroundColor Green "Generating Scripts..."
+		#Create installation script
+		New-Item -Path $parentInstallationFile -Name $("install_" + $installationFileName + ".ps1") -ItemType File -Value $("#Silently installs " + $installationFileName + "`n#Script Auto-Generated by " + $env:USERNAME + ", UWRF" +
 				"`n#Date Created " + $currentDate + "
         `n#Silently installs " + $installationFileName + "`nStart-Process" + ' "$PSScriptRoot\' + $installationFile + '"' + " -Wait -ArgumentList " + '"' + $switches + '"') -Force | Out-Null
 			
@@ -3525,6 +3594,12 @@ namespace ik.PowerShell
 		#	}
 	}
 	
+	$openfiledialog1_FileOk=[System.ComponentModel.CancelEventHandler]{
+	#Event Argument: $_ = [System.ComponentModel.CancelEventArgs]
+		#TODO: Place custom script here
+		
+	}
+	
 	# --End User Generated Script--
 	#----------------------------------------------
 	#region Generated Events
@@ -3575,6 +3650,7 @@ namespace ik.PowerShell
 			$checkboxAddStartMenuShortcut.remove_CheckedChanged($checkboxAddStartMenuShortcut_CheckedChanged)
 			$formPSDevelopmentTool.remove_Load($formPSDevelopmentTool_Load)
 			$tooltip1.remove_Popup($tooltip1_Popup)
+			$openfiledialog1.remove_FileOk($openfiledialog1_FileOk)
 			$formPSDevelopmentTool.remove_Load($Form_StateCorrection_Load)
 			$formPSDevelopmentTool.remove_FormClosed($Form_Cleanup_FormClosed)
 		}
@@ -3590,19 +3666,12 @@ namespace ik.PowerShell
 	$Base.SuspendLayout()
 	$AdditionalCode.SuspendLayout()
 	$AddOns.SuspendLayout()
+	$groupbox2.SuspendLayout()
 	#
 	# formPSDevelopmentTool
 	#
-	$formPSDevelopmentTool.Controls.Add($progressbar1)
-	$formPSDevelopmentTool.Controls.Add($buttonWrkstnDev08)
-	$formPSDevelopmentTool.Controls.Add($buttonWrkstnDev07)
-	$formPSDevelopmentTool.Controls.Add($buttonWrkstnDev05)
-	$formPSDevelopmentTool.Controls.Add($buttonWrkstnDev04)
-	$formPSDevelopmentTool.Controls.Add($buttonWrkstnDev03)
-	$formPSDevelopmentTool.Controls.Add($buttonWrkstnDev02)
-	$formPSDevelopmentTool.Controls.Add($buttonAustinsDevVM)
-	$formPSDevelopmentTool.Controls.Add($buttonWrkstnDev01)
 	$formPSDevelopmentTool.Controls.Add($labelDevelopmentResources)
+	$formPSDevelopmentTool.Controls.Add($progressbar1)
 	$formPSDevelopmentTool.Controls.Add($labelLaunchDevelopmentVMs)
 	$formPSDevelopmentTool.Controls.Add($buttonLaunchPowerShellAdmi)
 	$formPSDevelopmentTool.Controls.Add($buttonCMsource)
@@ -3612,6 +3681,8 @@ namespace ik.PowerShell
 	$formPSDevelopmentTool.Controls.Add($buttonPrev)
 	$formPSDevelopmentTool.Controls.Add($buttonExit)
 	$formPSDevelopmentTool.Controls.Add($tabcontrol1)
+	$formPSDevelopmentTool.Controls.Add($groupbox1)
+	$formPSDevelopmentTool.Controls.Add($groupbox2)
 	$formPSDevelopmentTool.AutoScaleDimensions = '6, 13'
 	$formPSDevelopmentTool.AutoScaleMode = 'Font'
 	$formPSDevelopmentTool.BackColor = 'DarkRed'
@@ -3621,6 +3692,19 @@ namespace ik.PowerShell
 	$formPSDevelopmentTool.Text = 'PS Development Tool'
 	$formPSDevelopmentTool.add_Load($formPSDevelopmentTool_Load)
 	#
+	# labelDevelopmentResources
+	#
+	$labelDevelopmentResources.AutoSize = $True
+	$labelDevelopmentResources.BackColor = 'Transparent'
+	$labelDevelopmentResources.Font = 'Microsoft Sans Serif, 8.25pt'
+	$labelDevelopmentResources.ForeColor = 'White'
+	$labelDevelopmentResources.Location = '21, 12'
+	$labelDevelopmentResources.Name = 'labelDevelopmentResources'
+	$labelDevelopmentResources.Size = '128, 17'
+	$labelDevelopmentResources.TabIndex = 8
+	$labelDevelopmentResources.Text = 'Development Resources'
+	$labelDevelopmentResources.UseCompatibleTextRendering = $True
+	#
 	# progressbar1
 	#
 	$progressbar1.Location = '256, 391'
@@ -3628,112 +3712,13 @@ namespace ik.PowerShell
 	$progressbar1.Size = '417, 23'
 	$progressbar1.TabIndex = 20
 	#
-	# buttonWrkstnDev08
-	#
-	$buttonWrkstnDev08.ForeColor = 'ControlText'
-	$buttonWrkstnDev08.Location = '5, 362'
-	$buttonWrkstnDev08.Name = 'buttonWrkstnDev08'
-	$buttonWrkstnDev08.Size = '163, 23'
-	$buttonWrkstnDev08.TabIndex = 17
-	$buttonWrkstnDev08.Text = 'Wrkstn-Dev-08'
-	$buttonWrkstnDev08.UseCompatibleTextRendering = $True
-	$buttonWrkstnDev08.UseVisualStyleBackColor = $True
-	#
-	# buttonWrkstnDev07
-	#
-	$buttonWrkstnDev07.ForeColor = 'ControlText'
-	$buttonWrkstnDev07.Location = '5, 333'
-	$buttonWrkstnDev07.Name = 'buttonWrkstnDev07'
-	$buttonWrkstnDev07.Size = '163, 23'
-	$buttonWrkstnDev07.TabIndex = 16
-	$buttonWrkstnDev07.Text = 'Wrkstn-Dev-07'
-	$buttonWrkstnDev07.UseCompatibleTextRendering = $True
-	$buttonWrkstnDev07.UseVisualStyleBackColor = $True
-	#
-	# buttonWrkstnDev05
-	#
-	$buttonWrkstnDev05.ForeColor = 'ControlText'
-	$buttonWrkstnDev05.Location = '5, 304'
-	$buttonWrkstnDev05.Name = 'buttonWrkstnDev05'
-	$buttonWrkstnDev05.Size = '163, 23'
-	$buttonWrkstnDev05.TabIndex = 15
-	$buttonWrkstnDev05.Text = 'Wrkstn-Dev-05'
-	$buttonWrkstnDev05.UseCompatibleTextRendering = $True
-	$buttonWrkstnDev05.UseVisualStyleBackColor = $True
-	#
-	# buttonWrkstnDev04
-	#
-	$buttonWrkstnDev04.ForeColor = 'ControlText'
-	$buttonWrkstnDev04.Location = '5, 275'
-	$buttonWrkstnDev04.Name = 'buttonWrkstnDev04'
-	$buttonWrkstnDev04.Size = '163, 23'
-	$buttonWrkstnDev04.TabIndex = 14
-	$buttonWrkstnDev04.Text = 'Wrkstn-Dev-04'
-	$buttonWrkstnDev04.UseCompatibleTextRendering = $True
-	$buttonWrkstnDev04.UseVisualStyleBackColor = $True
-	#
-	# buttonWrkstnDev03
-	#
-	$buttonWrkstnDev03.ForeColor = 'ControlText'
-	$buttonWrkstnDev03.Location = '5, 246'
-	$buttonWrkstnDev03.Name = 'buttonWrkstnDev03'
-	$buttonWrkstnDev03.Size = '163, 23'
-	$buttonWrkstnDev03.TabIndex = 13
-	$buttonWrkstnDev03.Text = 'Wrkstn-Dev-03'
-	$buttonWrkstnDev03.UseCompatibleTextRendering = $True
-	$buttonWrkstnDev03.UseVisualStyleBackColor = $True
-	#
-	# buttonWrkstnDev02
-	#
-	$buttonWrkstnDev02.ForeColor = 'ControlText'
-	$buttonWrkstnDev02.Location = '5, 217'
-	$buttonWrkstnDev02.Name = 'buttonWrkstnDev02'
-	$buttonWrkstnDev02.Size = '163, 23'
-	$buttonWrkstnDev02.TabIndex = 12
-	$buttonWrkstnDev02.Text = 'Wrkstn-Dev-02'
-	$buttonWrkstnDev02.UseCompatibleTextRendering = $True
-	$buttonWrkstnDev02.UseVisualStyleBackColor = $True
-	#
-	# buttonAustinsDevVM
-	#
-	$buttonAustinsDevVM.ForeColor = 'ControlText'
-	$buttonAustinsDevVM.Location = '5, 159'
-	$buttonAustinsDevVM.Name = 'buttonAustinsDevVM'
-	$buttonAustinsDevVM.Size = '163, 23'
-	$buttonAustinsDevVM.TabIndex = 11
-	$buttonAustinsDevVM.Text = 'Austin''s Dev VM'
-	$buttonAustinsDevVM.UseCompatibleTextRendering = $True
-	$buttonAustinsDevVM.UseVisualStyleBackColor = $True
-	#
-	# buttonWrkstnDev01
-	#
-	$buttonWrkstnDev01.ForeColor = 'ControlText'
-	$buttonWrkstnDev01.Location = '5, 188'
-	$buttonWrkstnDev01.Name = 'buttonWrkstnDev01'
-	$buttonWrkstnDev01.Size = '163, 23'
-	$buttonWrkstnDev01.TabIndex = 10
-	$buttonWrkstnDev01.Text = 'Wrkstn-Dev-01'
-	$buttonWrkstnDev01.UseCompatibleTextRendering = $True
-	$buttonWrkstnDev01.UseVisualStyleBackColor = $True
-	#
-	# labelDevelopmentResources
-	#
-	$labelDevelopmentResources.AutoSize = $True
-	$labelDevelopmentResources.Font = 'Microsoft Sans Serif, 8.25pt, style=Underline'
-	$labelDevelopmentResources.ForeColor = 'White'
-	$labelDevelopmentResources.Location = '25, 12'
-	$labelDevelopmentResources.Name = 'labelDevelopmentResources'
-	$labelDevelopmentResources.Size = '128, 17'
-	$labelDevelopmentResources.TabIndex = 8
-	$labelDevelopmentResources.Text = 'Development Resources'
-	$labelDevelopmentResources.UseCompatibleTextRendering = $True
-	#
 	# labelLaunchDevelopmentVMs
 	#
 	$labelLaunchDevelopmentVMs.AutoSize = $True
-	$labelLaunchDevelopmentVMs.Font = 'Microsoft Sans Serif, 8.25pt, style=Underline'
+	$labelLaunchDevelopmentVMs.BackColor = 'Transparent'
+	$labelLaunchDevelopmentVMs.Font = 'Microsoft Sans Serif, 8.25pt'
 	$labelLaunchDevelopmentVMs.ForeColor = 'White'
-	$labelLaunchDevelopmentVMs.Location = '21, 139'
+	$labelLaunchDevelopmentVMs.Location = '21, 130'
 	$labelLaunchDevelopmentVMs.Name = 'labelLaunchDevelopmentVMs'
 	$labelLaunchDevelopmentVMs.Size = '137, 17'
 	$labelLaunchDevelopmentVMs.TabIndex = 9
@@ -3742,9 +3727,9 @@ namespace ik.PowerShell
 	#
 	# buttonLaunchPowerShellAdmi
 	#
-	$buttonLaunchPowerShellAdmi.Location = '5, 92'
+	$buttonLaunchPowerShellAdmi.Location = '11, 92'
 	$buttonLaunchPowerShellAdmi.Name = 'buttonLaunchPowerShellAdmi'
-	$buttonLaunchPowerShellAdmi.Size = '163, 23'
+	$buttonLaunchPowerShellAdmi.Size = '151, 23'
 	$buttonLaunchPowerShellAdmi.TabIndex = 7
 	$buttonLaunchPowerShellAdmi.Text = 'Launch PowerShell Admin'
 	$buttonLaunchPowerShellAdmi.UseCompatibleTextRendering = $True
@@ -3753,9 +3738,9 @@ namespace ik.PowerShell
 	#
 	# buttonCMsource
 	#
-	$buttonCMsource.Location = '5, 63'
+	$buttonCMsource.Location = '11, 63'
 	$buttonCMsource.Name = 'buttonCMsource'
-	$buttonCMsource.Size = '163, 23'
+	$buttonCMsource.Size = '151, 23'
 	$buttonCMsource.TabIndex = 6
 	$buttonCMsource.Text = 'Open \\cm\source'
 	$buttonCMsource.UseCompatibleTextRendering = $True
@@ -3765,9 +3750,9 @@ namespace ik.PowerShell
 	# buttonSS64
 	#
 	$buttonSS64.ForeColor = 'ControlText'
-	$buttonSS64.Location = '5, 34'
+	$buttonSS64.Location = '11, 34'
 	$buttonSS64.Name = 'buttonSS64'
-	$buttonSS64.Size = '163, 23'
+	$buttonSS64.Size = '151, 23'
 	$buttonSS64.TabIndex = 5
 	$buttonSS64.Text = '( SS64 )'
 	$buttonSS64.UseCompatibleTextRendering = $True
@@ -3836,6 +3821,7 @@ namespace ik.PowerShell
 	$tabcontrol1.Controls.Add($Base)
 	$tabcontrol1.Controls.Add($AdditionalCode)
 	$tabcontrol1.Controls.Add($AddOns)
+	$tabcontrol1.Controls.Add($tabpage1)
 	$tabcontrol1.Anchor = 'Top, Bottom, Left, Right'
 	$tabcontrol1.Location = '174, 12'
 	$tabcontrol1.Name = 'tabcontrol1'
@@ -4127,6 +4113,136 @@ namespace ik.PowerShell
 	$checkboxGenerateTestScript.UseCompatibleTextRendering = $True
 	$checkboxGenerateTestScript.UseVisualStyleBackColor = $True
 	#
+	# tabpage1
+	#
+	$tabpage1.Location = '4, 22'
+	$tabpage1.Name = 'tabpage1'
+	$tabpage1.Padding = '3, 3, 3, 3'
+	$tabpage1.Size = '664, 347'
+	$tabpage1.TabIndex = 3
+	$tabpage1.Text = '.PS1 to .EXE'
+	$tabpage1.UseVisualStyleBackColor = $True
+	#
+	# groupbox1
+	#
+	$groupbox1.BackColor = 'Transparent'
+	$groupbox1.Font = 'Microsoft Sans Serif, 8.25pt, style=Underline'
+	$groupbox1.ForeColor = 'White'
+	$groupbox1.Location = '5, 23'
+	$groupbox1.Name = 'groupbox1'
+	$groupbox1.Size = '163, 102'
+	$groupbox1.TabIndex = 21
+	$groupbox1.TabStop = $False
+	$groupbox1.UseCompatibleTextRendering = $True
+	#
+	# groupbox2
+	#
+	$groupbox2.Controls.Add($buttonAustinsDevVM)
+	$groupbox2.Controls.Add($buttonWrkstnDev01)
+	$groupbox2.Controls.Add($buttonWrkstnDev08)
+	$groupbox2.Controls.Add($buttonWrkstnDev02)
+	$groupbox2.Controls.Add($buttonWrkstnDev07)
+	$groupbox2.Controls.Add($buttonWrkstnDev03)
+	$groupbox2.Controls.Add($buttonWrkstnDev05)
+	$groupbox2.Controls.Add($buttonWrkstnDev04)
+	$groupbox2.BackColor = 'Transparent'
+	$groupbox2.Font = 'Microsoft Sans Serif, 8.25pt, style=Underline'
+	$groupbox2.ForeColor = 'White'
+	$groupbox2.Location = '5, 141'
+	$groupbox2.Name = 'groupbox2'
+	$groupbox2.Size = '163, 244'
+	$groupbox2.TabIndex = 22
+	$groupbox2.TabStop = $False
+	$groupbox2.UseCompatibleTextRendering = $True
+	#
+	# buttonAustinsDevVM
+	#
+	$buttonAustinsDevVM.ForeColor = 'ControlText'
+	$buttonAustinsDevVM.Location = '7, 11'
+	$buttonAustinsDevVM.Name = 'buttonAustinsDevVM'
+	$buttonAustinsDevVM.Size = '151, 23'
+	$buttonAustinsDevVM.TabIndex = 11
+	$buttonAustinsDevVM.Text = 'Austin''s Dev VM'
+	$buttonAustinsDevVM.UseCompatibleTextRendering = $True
+	$buttonAustinsDevVM.UseVisualStyleBackColor = $True
+	#
+	# buttonWrkstnDev01
+	#
+	$buttonWrkstnDev01.ForeColor = 'ControlText'
+	$buttonWrkstnDev01.Location = '7, 40'
+	$buttonWrkstnDev01.Name = 'buttonWrkstnDev01'
+	$buttonWrkstnDev01.Size = '150, 23'
+	$buttonWrkstnDev01.TabIndex = 10
+	$buttonWrkstnDev01.Text = 'Wrkstn-Dev-01'
+	$buttonWrkstnDev01.UseCompatibleTextRendering = $True
+	$buttonWrkstnDev01.UseVisualStyleBackColor = $True
+	#
+	# buttonWrkstnDev08
+	#
+	$buttonWrkstnDev08.ForeColor = 'ControlText'
+	$buttonWrkstnDev08.Location = '6, 214'
+	$buttonWrkstnDev08.Name = 'buttonWrkstnDev08'
+	$buttonWrkstnDev08.Size = '151, 23'
+	$buttonWrkstnDev08.TabIndex = 17
+	$buttonWrkstnDev08.Text = 'Wrkstn-Dev-08'
+	$buttonWrkstnDev08.UseCompatibleTextRendering = $True
+	$buttonWrkstnDev08.UseVisualStyleBackColor = $True
+	#
+	# buttonWrkstnDev02
+	#
+	$buttonWrkstnDev02.ForeColor = 'ControlText'
+	$buttonWrkstnDev02.Location = '7, 69'
+	$buttonWrkstnDev02.Name = 'buttonWrkstnDev02'
+	$buttonWrkstnDev02.Size = '150, 23'
+	$buttonWrkstnDev02.TabIndex = 12
+	$buttonWrkstnDev02.Text = 'Wrkstn-Dev-02'
+	$buttonWrkstnDev02.UseCompatibleTextRendering = $True
+	$buttonWrkstnDev02.UseVisualStyleBackColor = $True
+	#
+	# buttonWrkstnDev07
+	#
+	$buttonWrkstnDev07.ForeColor = 'ControlText'
+	$buttonWrkstnDev07.Location = '6, 185'
+	$buttonWrkstnDev07.Name = 'buttonWrkstnDev07'
+	$buttonWrkstnDev07.Size = '151, 23'
+	$buttonWrkstnDev07.TabIndex = 16
+	$buttonWrkstnDev07.Text = 'Wrkstn-Dev-07'
+	$buttonWrkstnDev07.UseCompatibleTextRendering = $True
+	$buttonWrkstnDev07.UseVisualStyleBackColor = $True
+	#
+	# buttonWrkstnDev03
+	#
+	$buttonWrkstnDev03.ForeColor = 'ControlText'
+	$buttonWrkstnDev03.Location = '7, 98'
+	$buttonWrkstnDev03.Name = 'buttonWrkstnDev03'
+	$buttonWrkstnDev03.Size = '150, 23'
+	$buttonWrkstnDev03.TabIndex = 13
+	$buttonWrkstnDev03.Text = 'Wrkstn-Dev-03'
+	$buttonWrkstnDev03.UseCompatibleTextRendering = $True
+	$buttonWrkstnDev03.UseVisualStyleBackColor = $True
+	#
+	# buttonWrkstnDev05
+	#
+	$buttonWrkstnDev05.ForeColor = 'ControlText'
+	$buttonWrkstnDev05.Location = '7, 156'
+	$buttonWrkstnDev05.Name = 'buttonWrkstnDev05'
+	$buttonWrkstnDev05.Size = '150, 23'
+	$buttonWrkstnDev05.TabIndex = 15
+	$buttonWrkstnDev05.Text = 'Wrkstn-Dev-05'
+	$buttonWrkstnDev05.UseCompatibleTextRendering = $True
+	$buttonWrkstnDev05.UseVisualStyleBackColor = $True
+	#
+	# buttonWrkstnDev04
+	#
+	$buttonWrkstnDev04.ForeColor = 'ControlText'
+	$buttonWrkstnDev04.Location = '7, 127'
+	$buttonWrkstnDev04.Name = 'buttonWrkstnDev04'
+	$buttonWrkstnDev04.Size = '150, 23'
+	$buttonWrkstnDev04.TabIndex = 14
+	$buttonWrkstnDev04.Text = 'Wrkstn-Dev-04'
+	$buttonWrkstnDev04.UseCompatibleTextRendering = $True
+	$buttonWrkstnDev04.UseVisualStyleBackColor = $True
+	#
 	# tooltip1
 	#
 	$tooltip1.add_Popup($tooltip1_Popup)
@@ -4135,7 +4251,10 @@ namespace ik.PowerShell
 	#
 	$openfiledialog1.DefaultExt = 'exe'
 	$openfiledialog1.Filter = 'Executable Files (*.exe, *.msi)| *.exe;*.msi'
+	$openfiledialog1.InitialDirectory = '\\cm\source'
 	$openfiledialog1.ShowHelp = $True
+	$openfiledialog1.add_FileOk($openfiledialog1_FileOk)
+	$groupbox2.ResumeLayout()
 	$AddOns.ResumeLayout()
 	$AdditionalCode.ResumeLayout()
 	$Base.ResumeLayout()
