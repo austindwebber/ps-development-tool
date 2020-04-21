@@ -11,3 +11,6 @@ Users can input installation switches, installation file name, and allow for mov
 Within the PS Development Tool, you can launch development resources, RDP to VMs, and convert your scripts to executables.
 
 ![PSDevelopmentTool](https://i.imgur.com/TxWWfUI.png)
+
+Video Demo:
+[![Demo](https://img.youtube.com/vi/cDJq3X_VR58/maxresdefault.jpg)](https://youtu.be/cDJq3X_VR58)
